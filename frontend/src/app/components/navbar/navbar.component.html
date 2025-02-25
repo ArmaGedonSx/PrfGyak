@@ -1,0 +1,19 @@
+<nav class="navbar">
+    <div class="navbar-brand">
+        <a routerLink="/">MEAN Stack App</a>
+    </div>
+
+    <div class="navbar-menu">
+        <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
+            <a routerLink="/login" class="nav-link">Bejelentkezés</a>
+            <a routerLink="/register" class="nav-link">Regisztráció</a>
+        </ng-container>
+
+        <ng-template #loggedIn>
+            <div class="user-info">
+                <span>{{ (authService.user$ | async)?.email }}</span>
+                <button (click)="onLogout()" class="logout-btn">Kijelentkezés</button>
+            </div>
+        </ng-template>
+    </div>
+</nav>

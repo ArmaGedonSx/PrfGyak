@@ -27,22 +27,42 @@ Angular-project/
 1. Klónozd le a repository-t:
 ```bash
 git clone <repository-url>
-cd Angular-project
+cd PrfGyak
 ```
 
-2. Indítsd el a konténereket:
+2. Ajánlott sorrend a konténerek kezeléséhez:
+
 ```bash
-sudo docker-compose up --build
+# Leállítás és tisztítás (ha már futott korábban)
+sudo docker-compose down
+
+# Tiszta build újraindításhoz
+sudo docker-compose build --no-cache
+
+# Konténerek indítása
+sudo docker-compose up
+```
+
+Vagy egy parancsban:
+```bash
+sudo docker-compose down && sudo docker-compose build --no-cache && sudo docker-compose up
 ```
 
 A build folyamat:
 1. Létrehozza a MongoDB konténert
+   - Adatok perzisztens tárolása volume-ban
+   - Port: 27017
 2. Felépíti az Angular projektet:
    - Routing engedélyezve
    - SCSS stílusok
    - API proxy konfiguráció
+   - Hot-reload engedélyezve fejlesztéshez
+   - Port: 4200
 3. Telepíti az összes függőséget
-4. Elindítja a szervereket
+4. Elindítja a szervereket:
+   - Express backend (Port: 3000)
+   - Angular development server
+   - MongoDB adatbázis
 
 ## Elérhetőség
 

@@ -7,22 +7,20 @@ WORKDIR /app
 # Install Angular CLI globally
 RUN npm install -g @angular/cli
 
-# Copy frontend files and install dependencies
-COPY frontend/ /app/frontend/
-WORKDIR /app/frontend
-RUN npm install
-
-# Copy backend package.json and install dependencies
-WORKDIR /app
-COPY backend/package.json ./backend/
+# Backend setup
+COPY backend/package.json /app/backend/
 WORKDIR /app/backend
 RUN npm install
+COPY backend/ /app/backend/
 
-# Copy backend files
-COPY backend/ ./backend/
+# Frontend setup
+COPY frontend/package.json /app/frontend/
+WORKDIR /app/frontend
+RUN npm install
+COPY frontend/ /app/frontend/
 
-# Set working directory back to root
-WORKDIR /app
+# Set permissions for node_modules
+RUN chmod -R 777 /app/backend/node_modules /app/frontend/node_modules
 
 # Expose ports
 EXPOSE 4200 3000

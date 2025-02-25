@@ -19,9 +19,9 @@ services:
       - "3000:3000"  # Express
     volumes:
       - ./backend:/app/backend
-      - /app/backend/node_modules
       - ./frontend:/app/frontend
-      - /app/frontend/node_modules
+      - backend_node_modules:/app/backend/node_modules
+      - frontend_node_modules:/app/frontend/node_modules
     depends_on:
       - mongodb
     environment:
@@ -29,3 +29,5 @@ services:
 
 volumes:
   mongodb_data:
+  backend_node_modules:
+  frontend_node_modules:

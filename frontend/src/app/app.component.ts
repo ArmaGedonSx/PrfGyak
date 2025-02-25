@@ -1,28 +1,24 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [CommonModule, RouterOutlet],
+    imports: [CommonModule, RouterOutlet, NavbarComponent],
     template: `
-        <div class="container">
-            <h1>Welcome to {{ title }}</h1>
-            <p>This is a simple MEAN stack application.</p>
-        </div>
+        <app-navbar></app-navbar>
+        <main>
+            <router-outlet></router-outlet>
+        </main>
     `,
     styles: [`
-        .container {
+        main {
             padding: 20px;
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
-        h1 {
-            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
         }
     `]
 })
-export class AppComponent {
-    title = 'MEAN Stack App';
-}
+export class AppComponent { }

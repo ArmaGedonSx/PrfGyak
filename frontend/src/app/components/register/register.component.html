@@ -1,0 +1,52 @@
+<div class="register-container">
+    <h2>Regisztráció</h2>
+    <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" [(ngModel)]="email" required email #emailInput="ngModel">
+            <div *ngIf="emailInput.invalid && emailInput.touched" class="error">
+                Érvényes email címet adj meg!
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Jelszó:</label>
+            <div class="password-field">
+                <input [type]="showPassword ? 'text' : 'password'" id="password" name="password" [(ngModel)]="password"
+                    required minlength="6" #passwordInput="ngModel">
+                <span class="toggle-password" (click)="togglePasswordVisibility('password')">
+                    <i class="eye-icon" [class.visible]="showPassword">👁</i>
+                </span>
+            </div>
+            <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error">
+                A jelszónak legalább 6 karakter hosszúnak kell lennie!
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">Jelszó megerősítése:</label>
+            <div class="password-field">
+                <input [type]="showConfirmPassword ? 'text' : 'password'" id="confirmPassword" name="confirmPassword"
+                    [(ngModel)]="confirmPassword" required #confirmPasswordInput="ngModel">
+                <span class="toggle-password" (click)="togglePasswordVisibility('confirmPassword')">
+                    <i class="eye-icon" [class.visible]="showConfirmPassword">👁</i>
+                </span>
+            </div>
+            <div *ngIf="confirmPasswordInput.touched && password !== confirmPassword" class="error">
+                A jelszavak nem egyeznek!
+            </div>
+        </div>
+
+        <div *ngIf="error" class="error-message">
+            {{ error }}
+        </div>
+
+        <button type="submit" [disabled]="registerForm.invalid || password !== confirmPassword">
+            Regisztráció
+        </button>
+
+        <div class="login-link">
+            Már van fiókod? <a routerLink="/login">Jelentkezz be itt!</a>
+        </div>
+    </form>
+</div>
