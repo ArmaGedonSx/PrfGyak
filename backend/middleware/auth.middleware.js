@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 
+// Hosszabb lejárati idő (7 nap)
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_EXPIRATION = '7d'; // 7 nap
 
 const authMiddleware = (req, res, next) => {
     try {
@@ -18,11 +20,13 @@ const authMiddleware = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (error) {
-        return res.status(401).json({ message: 'Invalid token' });
+        console.error('Auth middleware error:', error.message);
+        return res.status(401).json({ message: 'Invalid token', error: error.message });
     }
 };
 
 module.exports = {
     authMiddleware,
-    JWT_SECRET
+    JWT_SECRET,
+    JWT_EXPIRATION
 };

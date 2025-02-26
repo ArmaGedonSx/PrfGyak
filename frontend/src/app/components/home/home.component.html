@@ -1,12 +1,13 @@
 <div class="home-container">
     <div class="welcome-section">
-        <h1>Üdvözöljük!</h1>
+        <h1>Üdvözöljük, {{ username }}!</h1>
         <p class="user-email">Bejelentkezve mint: {{ userEmail }}</p>
     </div>
 
     <div class="content-section">
-        <h2>Védett tartalom</h2>
-        <p>Ez az oldal csak bejelentkezett felhasználók számára érhető el.</p>
-        <p>Itt jelenhet meg bármilyen védett tartalom vagy funkció.</p>
+        <h2>Receptgyűjtemény</h2>
+        <p>Böngésszen a receptek között, vagy adjon hozzá újakat.</p>
+
+        <app-recipe-list></app-recipe-list>
     </div>
 </div>

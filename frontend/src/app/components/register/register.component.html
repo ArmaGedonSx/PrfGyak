@@ -2,6 +2,15 @@
     <h2>Regisztráció</h2>
     <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
         <div class="form-group">
+            <label for="username">Felhasználónév:</label>
+            <input type="text" id="username" name="username" [(ngModel)]="username" required minlength="3"
+                #usernameInput="ngModel">
+            <div *ngIf="usernameInput.invalid && usernameInput.touched" class="error">
+                A felhasználónévnek legalább 3 karakter hosszúnak kell lennie!
+            </div>
+        </div>
+
+        <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" [(ngModel)]="email" required email #emailInput="ngModel">
             <div *ngIf="emailInput.invalid && emailInput.touched" class="error">

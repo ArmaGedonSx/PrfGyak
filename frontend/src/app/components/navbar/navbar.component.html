@@ -1,6 +1,6 @@
 <nav class="navbar">
     <div class="navbar-brand">
-        <a routerLink="/">MEAN Stack App</a>
+        <a routerLink="/">Receptgyűjtemény</a>
     </div>
 
     <div class="navbar-menu">
@@ -10,8 +10,10 @@
         </ng-container>
 
         <ng-template #loggedIn>
+            <a routerLink="/home" class="nav-link">Főoldal</a>
+            <a routerLink="/recipes" class="nav-link">Receptek</a>
             <div class="user-info">
-                <span>{{ (authService.user$ | async)?.email }}</span>
+                <span *ngIf="(authService.user$ | async) as user">{{ user.username }}</span>
                 <button (click)="onLogout()" class="logout-btn">Kijelentkezés</button>
             </div>
         </ng-template>

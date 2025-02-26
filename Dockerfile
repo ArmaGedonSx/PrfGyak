@@ -20,7 +20,7 @@ RUN npm install
 COPY frontend/ /app/frontend/
 
 # Set permissions for node_modules
-RUN chmod -R 777 /app/backend/node_modules /app/frontend/node_modules
+# RUN chmod -R 777 /app/backend/node_modules /app/frontend/node_modules
 
 # Expose ports
 EXPOSE 4200 3000
