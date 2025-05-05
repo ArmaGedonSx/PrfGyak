@@ -1,0 +1,80 @@
+<div class="profile-edit-container">
+    <h2>Profil szerkesztése</h2>
+
+    <div *ngIf="user?.role === 'admin'" class="admin-info">
+        <i class="admin-icon">⭐</i> Admin felhasználó
+    </div>
+
+    <div *ngIf="error" class="error-message">{{ error }}</div>
+    <div *ngIf="success" class="success-message">{{ success }}</div>
+
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <!-- Felhasználónév -->
+        <div class="form-group">
+            <label for="username">Felhasználónév</label>
+            <input type="text" id="username" formControlName="username" required>
+            <div *ngIf="profileForm.get('username')?.invalid && profileForm.get('username')?.touched"
+                class="error-text">
+                A felhasználónév kötelező és legalább 3 karakter hosszú kell legyen
+            </div>
+        </div>
+
+        <!-- Email (csak megjelenítés, nem szerkeszthető) -->
+        <div class="form-group">
+            <label>Email</label>
+            <input type="text" [value]="user?.email" disabled>
+            <div class="hint-text">Az email cím nem módosítható</div>
+        </div>
+
+        <!-- Profilkép feltöltési mód választó -->
+        <div class="form-group">
+            <label>Profilkép</label>
+
+            <div class="image-upload-modes">
+                <button type="button" [class.active]="imageUploadMode === 'local'"
+                    (click)="imageUploadMode = 'local'">Fájl feltöltése</button>
+                <button type="button" [class.active]="imageUploadMode === 'url'" (click)="imageUploadMode = 'url'">URL
+                    megadása</button>
+            </div>
+
+            <!-- Aktuális profilkép előnézet -->
+            <div class="profile-image-preview">
+                <img [src]="profileForm.get('profilePicture')?.value || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'"
+                    alt="Profilkép">
+            </div>
+
+            <!-- Lokális fájl feltöltés -->
+            <div *ngIf="imageUploadMode === 'local'" class="upload-section">
+                <input type="file" (change)="onFileSelected($event)" accept="image/*">
+                <div class="hint-text">Válassz egy képet a készülékedről</div>
+            </div>
+
+            <!-- URL megadása -->
+            <div *ngIf="imageUploadMode === 'url'" class="url-section">
+                <input type="text" formControlName="profilePicture" placeholder="Add meg a kép URL-jét">
+                <div class="hint-text">Add meg a kép közvetlen linkjét</div>
+            </div>
+
+        </div>
+
+        <!-- Étkezési preferenciák -->
+        <div class="form-group">
+            <label>Étkezési preferenciák</label>
+
+            <div class="dietary-preferences">
+                <div class="preference-option" *ngFor="let option of dietaryOptions"
+                    [class.selected]="isDietaryPreferenceSelected(option)" (click)="toggleDietaryPreference(option)">
+                    {{ option }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Gombok -->
+        <div class="form-actions">
+            <button type="button" class="cancel-btn" (click)="cancel()">Mégse</button>
+            <button type="submit" class="save-btn" [disabled]="profileForm.invalid || loading">
+                {{ loading ? 'Mentés...' : 'Mentés' }}
+            </button>
+        </div>
+    </form>
+</div>

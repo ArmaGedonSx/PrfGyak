@@ -12,7 +12,8 @@ const {
     authRoutes,
     recipeRoutes,
     ingredientRoutes,
-    mealPlanRoutes
+    mealPlanRoutes,
+    adminRoutes
 } = require('./routes');
 
 const app = express();
@@ -59,6 +60,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/recipes', recipeRoutes);
 app.use('/api/ingredients', ingredientRoutes);
 app.use('/api/mealplans', mealPlanRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Test Route
 app.get('/api/test', (req, res) => {

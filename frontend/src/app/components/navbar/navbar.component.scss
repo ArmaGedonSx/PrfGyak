@@ -35,6 +35,15 @@
             &:hover {
                 background-color: rgba(255, 255, 255, 0.1);
             }
+
+            &.admin-link {
+                background-color: rgba(220, 53, 69, 0.2);
+                font-weight: 500;
+
+                &:hover {
+                    background-color: rgba(220, 53, 69, 0.3);
+                }
+            }
         }
 
         .user-info {
@@ -44,6 +53,31 @@
 
             span {
                 color: #f8f9fa;
+            }
+
+            .profile-link {
+                color: #f8f9fa;
+                text-decoration: none;
+                font-weight: 500;
+                transition: color 0.2s;
+
+                &:hover {
+                    color: #17a2b8;
+                    text-decoration: underline;
+                }
+
+                .admin-badge {
+                    background-color: #dc3545;
+                    color: white;
+                    font-size: 0.7rem;
+                    padding: 2px 6px;
+                    border-radius: 10px;
+                    margin-left: 5px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    display: inline-block;
+                    vertical-align: middle;
+                }
             }
 
             .logout-btn {

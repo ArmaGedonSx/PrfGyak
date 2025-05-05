@@ -1,0 +1,105 @@
+Feladatok:
+
+1. Adatbázis modell kialakítása (MongoDB)
+ * Felhasználók kollekció
+	+ _id: ObjectId
+	+ username: String (egyedi)
+	+ email: String (egyedi)
+	+ password: String (hash-elt)
+	+ profilePicture: String (URL)
+	+ dietaryPreferences: Array (pl. vegetáriánus, gluténmentes)
+	+ favoriteRecipes: Array of ObjectId (hivatkozás a Receptek kollekcióra)
+	+ createdAt: Date
+	+ updatedAt: Date
+ * Receptek kollekció
+	+ _id: ObjectId
+	+ title: String
+	+ description: String
+	+ author: ObjectId (hivatkozás a Felhasználók kollekcióra)
+	+ prepTime: Number (perc)
+	+ cookTime: Number (perc)
+	+ servings: Number
+	+ difficulty: String (könnyű, közepes, nehéz)
+	+ ingredients: Array of ObjectId (hivatkozás a Hozzávalók kollekcióra)
+	+ ingredientQuantities: Array of {ingredientId: ObjectId, quantity: Number, unit: String}
+	+ steps: Array of String
+	+ categories: Array of String (pl. főétel, desszert, leves)
+	+ tags: Array of String (pl. gyors, olcsó, egészséges)
+	+ images: Array of String (URL-ek)
+	+ ratings: Array of {userId: ObjectId, rating: Number, comment: String, date: Date}
+	+ averageRating: Number
+	+ createdAt: Date
+	+ updatedAt: Date
+ * Hozzávalók kollekció
+	+ _id: ObjectId
+	+ name: String
+	+ category: String (pl. zöldség, gyümölcs, tejtermék)
+	+ nutritionalInfo: Object (kalória, fehérje, szénhidrát, zsír)
+	+ commonUnits: Array of String (pl. gramm, db, kanál)
+	+ image: String (URL)
+	+ allergens: Array of String (pl. glutén, laktóz)
+ * Étrendek kollekció
+	+ _id: ObjectId
+	+ name: String
+	+ user: ObjectId (hivatkozás a Felhasználók kollekcióra)
+	+ startDate: Date
+	+ endDate: Date
+	+ meals: Array of { day: Number, mealType: String (reggeli, ebéd, vacsora), recipe: ObjectId (hivatkozás a Receptek kollekcióra), servings: Number }
+	+ notes: String
+	+ isPublic: Boolean
+	+ createdAt: Date
+	+ updatedAt: Date
+
+2. Backend funkciók kialakítása (Express.js + Node.js)
+     * Autentikáció és felhasználókezelés
+        + Regisztráció, bejelentkezés, kijelentkezés
+        + Felhasználói profil kezelése
+        + JWT token alapú autentikáció
+     * Recept API
+        + Receptek létrehozása, olvasása, frissítése, törlése
+        + Receptek keresése és szűrése (név, kategória, hozzávalók alapján)
+        + Receptek értékelése és kommentelése
+     * Hozzávaló API
+        + Hozzávalók kezelése
+        + Tápanyagtartalom lekérdezése
+     * Étrend API
+        + Étrendek létrehozása, kezelése
+        + Bevásárlólista generálása az étrendhez
+        + Tápanyagtartalom összesítése
+
+
+3. Frontend funkciók kialakítása (Angular)
+ * Felhasználói felület
+    + Reszponzív design
+    + Felhasználói profil oldal
+    + Recept böngésző és részletes nézet
+ * Recept kezelés
+    + Recept létrehozó/szerkesztő űrlap
+    + Recept kereső és szűrő komponens
+    + Recept értékelő rendszer
+ * Étrend tervező
+    + Drag-and-drop étrend összeállító
+    + Naptár nézet
+    + Bevásárlólista generátor
+
+4. Egyéb funkciók
+ * Kedvencek kezelése
+ * Receptek megosztása
+ * Nyomtatható receptek és bevásárlólisták
+
+5. Jogosultsági rendszer
+ * Normál felhasználó jogosultságok
+    + Saját profil megtekintése és szerkesztése
+    + Receptek böngészése, keresése, szűrése
+    + Receptek értékelése és kommentelése
+    + Saját receptek létrehozása, szerkesztése, törlése
+    + Saját étrendek létrehozása és kezelése
+ * Admin jogosultságok (a normál felhasználói jogosultságokon felül)
+    + Bármely recept szerkesztése vagy törlése (nem csak a sajátját)
+    + Felhasználók listázása és kezelése
+    + Felhasználók szerepkörének módosítása
+ * Megvalósítási terv
+    + Backend: adminMiddleware használata az admin-specifikus végpontok védelmére
+    + Frontend: AdminGuard létrehozása az admin oldalak védelméhez
+    + Admin dashboard komponens az admin funkciók központi kezeléséhez
+    + Feltételes megjelenítés a felhasználói felületen (admin funkciók csak adminoknak)

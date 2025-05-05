@@ -1,23 +1,17 @@
 version: '3.8'
 
 services:
-
-  mean-stack:
+  backend:
     build: .
-    container_name: mean-stack
+    container_name: mean-backend
     restart: always
     ports:
-      - "4200:4200"  # Angular
       - "3000:3000"  # Express
     volumes:
-      - ./backend:/app/backend
-      - ./frontend:/app/frontend
-      - backend_node_modules:/app/backend/node_modules
-      - frontend_node_modules:/app/frontend/node_modules
+      - ./backend:/app
+      - backend_node_modules:/app/node_modules
     environment:
       - MONGO_URI=mongodb+srv://ArmaGedonS:Arma123456@cluster0.kpgav.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 volumes:
-  # mongodb_data: # Nincs szükség erre a volume-ra
   backend_node_modules:
-  frontend_node_modules:

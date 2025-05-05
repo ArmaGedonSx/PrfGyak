@@ -4,10 +4,31 @@
     padding: 20px;
 }
 
-h2 {
-    text-align: center;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 30px;
+}
+
+h2 {
     color: #333;
+    margin: 0;
+}
+
+.add-recipe-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+.add-recipe-btn:hover {
+    background-color: #218838;
 }
 
 .loading,
@@ -120,6 +141,42 @@ h2 {
 
 .rating-value {
     font-weight: bold;
+}
+
+.recipe-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    gap: 10px;
+}
+
+.edit-btn,
+.delete-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+    flex: 1;
+}
+
+.edit-btn {
+    background-color: #007bff;
+    color: white;
+
+    &:hover {
+        background-color: #0056b3;
+    }
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+
+    &:hover {
+        background-color: #c82333;
+    }
 }
 
 .pagination {

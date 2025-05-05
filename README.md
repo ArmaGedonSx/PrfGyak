@@ -22,10 +22,14 @@ Ez a projekt egy MEAN (MongoDB, Express.js, Angular, Node.js) stack alkalmazás,
 
 ## Előfeltételek
 
+### Backend
 - Docker
 - Docker Compose
 
-Nincs szükség Node.js, MongoDB vagy egyéb függőségek lokális telepítésére, minden a Docker konténerekben fut.
+### Frontend
+- Node.js 20.x (ajánlott: 20.18.3 vagy újabb)
+- Angular CLI 17.0.0 (`npm install -g @angular/cli@17.0.0`)
+
 
 ## Projekt Struktúra
 
@@ -52,21 +56,37 @@ git clone <repository-url>
 cd PrfGyak
 ```
 
-2. Indítsd el a Docker konténereket:
+2. Backend indítása Docker-rel:
 
 ```bash
 # Leállítás és tisztítás (ha már futott korábban)
-sudo docker-compose down
+sudo docker-compose down --remove-orphans -v
 
 # Konténerek indítása
-sudo docker-compose up --build
+sudo docker-compose down --remove-orphans -v && sudo docker-compose up --build
 ```
 
-3. Seed adatok betöltése (opcionális):
+3. Frontend függőségek telepítése és indítása:
+
+```bash
+# Jogosultságok beállítása (ha szükséges)
+sudo chown -R $USER:$USER ./frontend
+
+# Frontend könyvtárba lépés
+cd frontend
+
+# Függőségek telepítése
+npm install
+
+# Angular alkalmazás indítása
+ng serve
+```
+
+4. Seed adatok betöltése (opcionális):
 
 ```bash
 # Új terminálban
-sudo docker exec -it mean-stack npm run seed
+sudo docker exec -it mean-backend node seed.js
 ```
 
 ## Elérhetőség
@@ -160,23 +180,28 @@ Fontos: A MongoDB Atlas kapcsolódási string formátuma `mongodb+srv://` protok
 
 ### Frontend Fejlesztés
 - A forrásfájlok a `frontend/src` könyvtárban találhatók
-- A változtatások automatikusan érvénybe lépnek
+- A változtatások automatikusan érvénybe lépnek az Angular fejlesztői szerveren
 - Új komponensek létrehozása:
   ```bash
-  sudo docker exec mean-stack ng generate component my-component
+  cd frontend
+  ng generate component my-component
   ```
 - Új service létrehozása:
   ```bash
-  sudo docker exec mean-stack ng generate service my-service
+  cd frontend
+  ng generate service my-service
   ```
 
 ### Backend Fejlesztés
 - A backend fájlok a `backend` könyvtárban találhatók
-- A változtatások automatikusan érvénybe lépnek
-- Az Express szerver újraindul a változtatások után
+- A változtatások a Docker kötet miatt automatikusan szinkronizálódnak a konténerrel
+- Az Express szerver újraindításához:
+  ```bash
+  sudo docker restart mean-backend
+  ```
 - Seed adatok betöltése:
   ```bash
-  sudo docker exec mean-stack npm run seed
+  sudo docker exec -it mean-backend node seed.js
   ```
 
 ## Tesztelés
@@ -208,7 +233,26 @@ Fontos: A MongoDB Atlas kapcsolódási string formátuma `mongodb+srv://` protok
   ```
 - Újraindítás tiszta állapotból:
   ```bash
-  sudo docker-compose down -v && sudo docker-compose up --build
+  sudo docker-compose down --remove-orphans -v && sudo docker-compose up --build
+  ```
+- Ha "orphan containers" hibát kapsz:
+  ```bash
+  sudo docker stop $(sudo docker ps -a -q)
+  sudo docker rm $(sudo docker ps -a -q)
   ```
 
-
+### Frontend fejlesztési problémák
+- Jogosultsági problémák esetén:
+  ```bash
+  sudo chown -R $USER:$USER ./frontend
+  ```
+- Ha npm telepítési hibákat tapasztalsz:
+  ```bash
+  rm -rf frontend/node_modules
+  rm -f frontend/package-lock.json
+  cd frontend && npm install
+  ```
+- Angular CLI hibák esetén:
+  ```bash
+  npm install -g @angular/cli@17.0.0
+  ```

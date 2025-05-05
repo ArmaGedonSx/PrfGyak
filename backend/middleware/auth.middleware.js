@@ -17,7 +17,10 @@ const authMiddleware = (req, res, next) => {
         const decoded = jwt.verify(token, JWT_SECRET);
 
         // Add user data to request
-        req.user = decoded;
+        req.user = {
+            ...decoded,
+            role: decoded.role || 'user' // Alapértelmezett érték, ha nincs role
+        };
         next();
     } catch (error) {
         console.error('Auth middleware error:', error.message);
@@ -25,8 +28,18 @@ const authMiddleware = (req, res, next) => {
     }
 };
 
+// Admin jogosultság ellenőrzése
+const adminMiddleware = (req, res, next) => {
+    // Ellenőrizzük, hogy a felhasználó be van-e jelentkezve és admin-e
+    if (!req.user || req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Nincs jogosultságod ehhez a művelethez' });
+    }
+    next();
+};
+
 module.exports = {
     authMiddleware,
+    adminMiddleware,
     JWT_SECRET,
     JWT_EXPIRATION
 };

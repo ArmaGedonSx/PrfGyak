@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, map } from 'rxjs';
 import { Router } from '@angular/router';
 
 interface User {
     id: string;
     username: string;
     email: string;
+    role?: string;
     profilePicture?: string;
     dietaryPreferences?: string[];
 }
@@ -54,14 +55,16 @@ export class AuthService {
                     return;
                 }
 
-                // If token is valid, get user profile
-                this.getProfile().subscribe({
-                    next: (user) => this.userSubject.next(user),
-                    error: (err) => {
-                        console.error('Error loading user profile:', err);
-                        // Don't remove token on error, just log it
-                    }
-                });
+                // Ha a token érvényes, beállítjuk a felhasználót a payload alapján
+                const user = {
+                    id: payload.userId,
+                    username: payload.username,
+                    email: payload.email,
+                    role: payload.role || 'user', // Alapértelmezett érték, ha nincs role
+                    profilePicture: payload.profilePicture
+                };
+                this.userSubject.next(user);
+
             } catch (e) {
                 console.error('Error decoding token:', e);
                 // Don't remove token on error, just log it
@@ -97,6 +100,21 @@ export class AuthService {
                 this.userSubject.next(user);
             })
         );
+    }
+
+    updateProfile(userData: {
+        username?: string;
+        profilePicture?: string;
+        dietaryPreferences?: string[];
+    }): Observable<User> {
+        return this.http.put<{ message: string, user: User }>(`${this.apiUrl}/profile`, userData)
+            .pipe(
+                map(response => response.user),
+                tap(user => {
+                    console.log('Profile updated:', user);
+                    this.userSubject.next(user);
+                })
+            );
     }
 
     getToken(): string | null {

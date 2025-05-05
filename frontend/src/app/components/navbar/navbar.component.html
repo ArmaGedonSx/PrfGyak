@@ -12,8 +12,15 @@
         <ng-template #loggedIn>
             <a routerLink="/home" class="nav-link">Főoldal</a>
             <a routerLink="/recipes" class="nav-link">Receptek</a>
+            <a *ngIf="(authService.user$ | async)?.role === 'admin'" routerLink="/admin"
+                class="nav-link admin-link">Admin</a>
             <div class="user-info">
-                <span *ngIf="(authService.user$ | async) as user">{{ user.username }}</span>
+                <span *ngIf="(authService.user$ | async) as user">
+                    <a routerLink="/profile/edit" class="profile-link">
+                        {{ user.username }}
+                        <span *ngIf="user.role === 'admin'" class="admin-badge">Admin</span>
+                    </a>
+                </span>
                 <button (click)="onLogout()" class="logout-btn">Kijelentkezés</button>
             </div>
         </ng-template>

@@ -1,5 +1,8 @@
 <div class="container">
-    <h2>Receptek</h2>
+    <div class="header">
+        <h2>Receptek</h2>
+        <button class="add-recipe-btn" [routerLink]="['/recipes/new']">Új recept</button>
+    </div>
 
     <div *ngIf="loading" class="loading">
         <p>Betöltés...</p>
@@ -38,6 +41,11 @@
                         <span *ngFor="let star of getStars(recipe.averageRating)">⭐</span>
                     </span>
                     <span class="rating-value">{{ recipe.averageRating.toFixed(1) }}</span>
+                </div>
+                <!-- Szerkesztés és törlés gombok, ha a felhasználó szerkesztheti a receptet -->
+                <div class="recipe-actions" *ngIf="canEditRecipe(recipe)">
+                    <button class="edit-btn" (click)="editRecipe(recipe._id, $event)">Szerkesztés</button>
+                    <button class="delete-btn" (click)="deleteRecipe(recipe._id, $event)">Törlés</button>
                 </div>
             </div>
         </div>

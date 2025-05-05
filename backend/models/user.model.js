@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    },
     profilePicture: {
         type: String,
         default: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'

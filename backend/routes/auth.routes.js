@@ -30,7 +30,7 @@ router.post('/register', async (req, res) => {
 
         // Create token with longer expiration
         const token = jwt.sign(
-            { userId: user._id, email: user.email, username: user.username },
+            { userId: user._id, email: user.email, username: user.username, role: user.role },
             JWT_SECRET,
             { expiresIn: JWT_EXPIRATION }
         );
@@ -42,6 +42,7 @@ router.post('/register', async (req, res) => {
                 id: user._id,
                 username: user.username,
                 email: user.email,
+                role: user.role,
                 dietaryPreferences: user.dietaryPreferences
             }
         });
@@ -69,7 +70,7 @@ router.post('/login', async (req, res) => {
 
         // Create token with longer expiration
         const token = jwt.sign(
-            { userId: user._id, email: user.email, username: user.username },
+            { userId: user._id, email: user.email, username: user.username, role: user.role },
             JWT_SECRET,
             { expiresIn: JWT_EXPIRATION }
         );
@@ -80,6 +81,7 @@ router.post('/login', async (req, res) => {
                 id: user._id,
                 username: user.username,
                 email: user.email,
+                role: user.role,
                 dietaryPreferences: user.dietaryPreferences,
                 profilePicture: user.profilePicture
             }
@@ -105,6 +107,7 @@ router.get('/profile', authMiddleware, async (req, res) => {
             id: user._id,
             username: user.username,
             email: user.email,
+            role: user.role,
             profilePicture: user.profilePicture,
             dietaryPreferences: user.dietaryPreferences,
             favoriteRecipes: user.favoriteRecipes
@@ -114,6 +117,61 @@ router.get('/profile', authMiddleware, async (req, res) => {
     } catch (error) {
         console.error('Profile error:', error);
         res.status(500).json({ message: 'Error fetching profile', error: error.message });
+    }
+});
+
+// Update user profile (protected route)
+router.put('/profile', authMiddleware, async (req, res) => {
+    try {
+        const { username, profilePicture, dietaryPreferences } = req.body;
+
+        // Ellenőrizzük, hogy a felhasználónév már foglalt-e (ha változott)
+        if (username) {
+            const existingUser = await User.findOne({
+                username,
+                _id: { $ne: req.user.userId }
+            });
+
+            if (existingUser) {
+                return res.status(400).json({
+                    message: 'Username already taken',
+                    field: 'username'
+                });
+            }
+        }
+
+        // Frissítjük a felhasználót (email nem módosítható)
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.userId,
+            {
+                username,
+                profilePicture,
+                dietaryPreferences,
+                updatedAt: Date.now()
+            },
+            { new: true, runValidators: true }
+        ).select('-password');
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json({
+            message: 'Profile updated successfully',
+            user: {
+                id: updatedUser._id,
+                username: updatedUser.username,
+                email: updatedUser.email,
+                role: updatedUser.role,
+                profilePicture: updatedUser.profilePicture,
+                dietaryPreferences: updatedUser.dietaryPreferences
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error updating profile',
+            error: error.message
+        });
     }
 });
 

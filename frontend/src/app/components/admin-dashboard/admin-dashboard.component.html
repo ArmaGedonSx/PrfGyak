@@ -1,0 +1,143 @@
+<div class="admin-dashboard">
+    <h1>Admin Vezérlőpult</h1>
+
+    <div class="dashboard-stats">
+        <div class="stat-card" (click)="activeTab = 'users'">
+            <h3>Felhasználók</h3>
+            <div class="stat-value">{{ userCount || 'Betöltés...' }}</div>
+        </div>
+        <div class="stat-card" (click)="activeTab = 'recipes'">
+            <h3>Receptek</h3>
+            <div class="stat-value">{{ recipeCount || 'Betöltés...' }}</div>
+        </div>
+        <div class="stat-card" (click)="activeTab = 'ingredients'">
+            <h3>Hozzávalók</h3>
+            <div class="stat-value">{{ ingredientCount || 'Betöltés...' }}</div>
+        </div>
+    </div>
+
+    <div class="dashboard-tabs">
+        <div class="tab-header">
+            <button [class.active]="activeTab === 'users'" (click)="activeTab = 'users'">Felhasználók</button>
+            <button [class.active]="activeTab === 'recipes'" (click)="activeTab = 'recipes'">Receptek</button>
+            <button [class.active]="activeTab === 'ingredients'" (click)="activeTab = 'ingredients'">Hozzávalók</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- Felhasználók kezelése -->
+            <div *ngIf="activeTab === 'users'" class="tab-panel">
+                <h2>Felhasználók kezelése</h2>
+                <div *ngIf="loadingUsers" class="loading">Betöltés...</div>
+                <div *ngIf="usersError" class="error-message">{{ usersError }}</div>
+                <div *ngIf="!loadingUsers && !usersError && users.length === 0" class="empty-state">Nincsenek
+                    felhasználók</div>
+
+                <table *ngIf="!loadingUsers && !usersError && users.length > 0" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Felhasználónév</th>
+                            <th>Email</th>
+                            <th>Szerepkör</th>
+                            <th>Műveletek</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of users">
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                <span [class.admin-role]="user.role === 'admin'">
+                                    {{ user.role === 'admin' ? 'Admin' : 'Felhasználó' }}
+                                </span>
+                            </td>
+                            <td class="actions">
+                                <button class="role-toggle-btn" (click)="toggleUserRole(user)">
+                                    {{ user.role === 'admin' ? 'Lefokozás' : 'Admin jogok' }}
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Receptek kezelése -->
+            <div *ngIf="activeTab === 'recipes'" class="tab-panel">
+                <h2>Receptek kezelése</h2>
+                <div *ngIf="loadingRecipes" class="loading">Betöltés...</div>
+                <div *ngIf="recipesError" class="error-message">{{ recipesError }}</div>
+                <div *ngIf="!loadingRecipes && !recipesError && recipes.length === 0" class="empty-state">Nincsenek
+                    receptek</div>
+
+                <table *ngIf="!loadingRecipes && !recipesError && recipes.length > 0" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Cím</th>
+                            <th>Szerző</th>
+                            <th>Elkészítési idő</th>
+                            <th>Nehézség</th>
+                            <th>Kategóriák</th>
+                            <th>Értékelés</th>
+                            <th>Műveletek</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let recipe of recipes">
+                            <td>{{ recipe.title }}</td>
+                            <td>{{ recipe.author.username }}</td>
+                            <td>{{ recipe.prepTime + recipe.cookTime }} perc</td>
+                            <td>{{ recipe.difficulty }}</td>
+                            <td>
+                                <span *ngFor="let category of recipe.categories; let last = last">
+                                    {{ category }}{{ !last ? ', ' : '' }}
+                                </span>
+                            </td>
+                            <td>{{ recipe.averageRating | number:'1.1-1' }} / 5</td>
+                            <td class="actions">
+                                <button class="edit-btn" (click)="editRecipe(recipe._id)">Szerkesztés</button>
+                                <button class="delete-btn" (click)="deleteRecipe(recipe._id)">Törlés</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Hozzávalók kezelése -->
+            <div *ngIf="activeTab === 'ingredients'" class="tab-panel">
+                <h2>Hozzávalók kezelése</h2>
+                <div *ngIf="loadingIngredients" class="loading">Betöltés...</div>
+                <div *ngIf="ingredientsError" class="error-message">{{ ingredientsError }}</div>
+                <div *ngIf="!loadingIngredients && !ingredientsError && ingredients.length === 0" class="empty-state">
+                    Nincsenek hozzávalók</div>
+
+                <table *ngIf="!loadingIngredients && !ingredientsError && ingredients.length > 0" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Név</th>
+                            <th>Kategória</th>
+                            <th>Kalória</th>
+                            <th>Fehérje</th>
+                            <th>Szénhidrát</th>
+                            <th>Zsír</th>
+                            <th>Mértékegységek</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let ingredient of ingredients">
+                            <td>{{ ingredient.name }}</td>
+                            <td>{{ ingredient.category }}</td>
+                            <td>{{ ingredient.nutritionalInfo.calories }} kcal</td>
+                            <td>{{ ingredient.nutritionalInfo.protein }} g</td>
+                            <td>{{ ingredient.nutritionalInfo.carbs }} g</td>
+                            <td>{{ ingredient.nutritionalInfo.fat }} g</td>
+                            <td>
+                                <span *ngFor="let unit of ingredient.commonUnits; let last = last">
+                                    {{ unit }}{{ !last ? ', ' : '' }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

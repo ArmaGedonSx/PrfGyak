@@ -29,7 +29,8 @@ const users = [
         email: 'admin@example.com',
         password: 'admin123',
         profilePicture: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
-        dietaryPreferences: ['none']
+        dietaryPreferences: ['none'],
+        role: 'admin'
     },
     {
         username: 'vegetarian_user',
@@ -227,11 +228,8 @@ async function seedDatabase() {
         // Create users
         const createdUsers = [];
         for (const userData of users) {
-            const hashedPassword = await bcrypt.hash(userData.password, 10);
-            const user = new User({
-                ...userData,
-                password: hashedPassword
-            });
+            // Ne titkosítsuk a jelszót, a User modell pre-save hook-ja fogja titkosítani
+            const user = new User(userData);
             await user.save();
             createdUsers.push(user);
         }

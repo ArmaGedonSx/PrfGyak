@@ -1,6 +1,6 @@
 const express = require('express');
 const { Recipe, User } = require('../models/index');
-const { authMiddleware } = require('../middleware/auth.middleware');
+const { authMiddleware, adminMiddleware } = require('../middleware/auth.middleware');
 
 const router = express.Router();
 
@@ -130,7 +130,7 @@ router.post('/', authMiddleware, async (req, res) => {
     }
 });
 
-// Update recipe (protected, only author)
+// Update recipe (protected, owner or admin)
 router.put('/:id', authMiddleware, async (req, res) => {
     try {
         const recipe = await Recipe.findById(req.params.id);
@@ -139,8 +139,11 @@ router.put('/:id', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: 'Recipe not found' });
         }
 
-        // Check if user is the author
-        if (recipe.author.toString() !== req.user.userId) {
+        // Check if user is the owner or admin
+        const isOwner = recipe.author.toString() === req.user.userId;
+        const isAdmin = req.user.role === 'admin';
+
+        if (!isOwner && !isAdmin) {
             return res.status(403).json({ message: 'Not authorized to update this recipe' });
         }
 
@@ -182,7 +185,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// Delete recipe (protected, only author)
+// Delete recipe (protected, owner or admin)
 router.delete('/:id', authMiddleware, async (req, res) => {
     try {
         const recipe = await Recipe.findById(req.params.id);
@@ -191,8 +194,11 @@ router.delete('/:id', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: 'Recipe not found' });
         }
 
-        // Check if user is the author
-        if (recipe.author.toString() !== req.user.userId) {
+        // Check if user is the owner or admin
+        const isOwner = recipe.author.toString() === req.user.userId;
+        const isAdmin = req.user.role === 'admin';
+
+        if (!isOwner && !isAdmin) {
             return res.status(403).json({ message: 'Not authorized to delete this recipe' });
         }
 
