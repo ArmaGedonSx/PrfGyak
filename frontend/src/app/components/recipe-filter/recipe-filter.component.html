@@ -1,0 +1,45 @@
+<div class="filter-container">
+    <h3>Szűrők</h3>
+
+    <div *ngIf="loading" class="loading">
+        <p>Betöltés...</p>
+    </div>
+
+    <div *ngIf="error" class="error">
+        <p>{{ error }}</p>
+        <button type="button" class="retry-btn" (click)="loadCategories()">Újrapróbálkozás</button>
+    </div>
+
+    <form [formGroup]="filterForm" *ngIf="!loading && !error">
+        <div class="search-field">
+            <input type="text" formControlName="search" placeholder="Keresés receptekben...">
+        </div>
+
+        <div class="filter-section">
+            <label>Kategória</label>
+            <select formControlName="category">
+                <option value="">Összes kategória</option>
+                <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+            </select>
+        </div>
+
+        <div class="filter-section">
+            <label>Nehézség</label>
+            <select formControlName="difficulty">
+                <option value="">Bármilyen nehézség</option>
+                <option *ngFor="let diff of difficulties" [value]="diff.value">{{ diff.label }}</option>
+            </select>
+        </div>
+
+        <div class="filter-section">
+            <label>Elkészítési idő (perc)</label>
+            <div class="time-range">
+                <input type="number" formControlName="minTime" placeholder="Min" min="0">
+                <span>-</span>
+                <input type="number" formControlName="maxTime" placeholder="Max" min="0">
+            </div>
+        </div>
+
+        <button type="button" class="reset-btn" (click)="resetFilters()">Szűrők törlése</button>
+    </form>
+</div>

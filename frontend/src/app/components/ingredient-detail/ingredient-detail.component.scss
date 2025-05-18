@@ -1,0 +1,303 @@
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.back-link {
+    margin-bottom: 20px;
+
+    .back-btn {
+        background: none;
+        border: none;
+        color: #007bff;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.loading,
+.error {
+    text-align: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.ingredient-detail {
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+
+        .title-section {
+            h1 {
+                margin: 0 0 10px 0;
+                color: #333;
+                font-size: 32px;
+            }
+
+            .category-badge {
+                display: inline-block;
+                background-color: #e9ecef;
+                color: #495057;
+                padding: 5px 10px;
+                border-radius: 4px;
+                font-size: 14px;
+            }
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+
+            button {
+                padding: 8px 15px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: background-color 0.2s;
+            }
+
+            .edit-btn {
+                background-color: #007bff;
+                color: white;
+
+                &:hover {
+                    background-color: #0069d9;
+                }
+            }
+
+            .delete-btn {
+                background-color: #dc3545;
+                color: white;
+
+                &:hover {
+                    background-color: #c82333;
+                }
+            }
+        }
+    }
+
+    .content {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 30px;
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+        }
+
+        .image-section {
+            .ingredient-image {
+                width: 100%;
+                height: 250px;
+                border-radius: 8px;
+                background-size: cover;
+                background-position: center;
+                background-color: #e9ecef;
+                margin-bottom: 20px;
+            }
+
+            .description {
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+
+                h3 {
+                    margin-top: 0;
+                    margin-bottom: 10px;
+                    color: #495057;
+                    font-size: 18px;
+                }
+
+                p {
+                    margin: 0;
+                    color: #6c757d;
+                    line-height: 1.5;
+                }
+            }
+        }
+
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+
+            .nutrition-card {
+                background-color: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+                h3 {
+                    margin-top: 0;
+                    margin-bottom: 20px;
+                    color: #495057;
+                    font-size: 18px;
+                }
+
+                .macro-chart {
+                    margin-bottom: 20px;
+
+                    .chart-container {
+                        .chart-bar {
+                            height: 30px;
+                            background-color: #e9ecef;
+                            border-radius: 4px;
+                            overflow: hidden;
+                            display: flex;
+                            margin-bottom: 10px;
+
+                            .protein-bar {
+                                height: 100%;
+                                background-color: #28a745;
+                            }
+
+                            .carbs-bar {
+                                height: 100%;
+                                background-color: #ffc107;
+                            }
+
+                            .fat-bar {
+                                height: 100%;
+                                background-color: #dc3545;
+                            }
+                        }
+
+                        .chart-legend {
+                            display: flex;
+                            justify-content: center;
+                            gap: 20px;
+
+                            .legend-item {
+                                display: flex;
+                                align-items: center;
+                                gap: 5px;
+                                font-size: 14px;
+
+                                .color-box {
+                                    width: 15px;
+                                    height: 15px;
+                                    border-radius: 3px;
+
+                                    &.protein {
+                                        background-color: #28a745;
+                                    }
+
+                                    &.carbs {
+                                        background-color: #ffc107;
+                                    }
+
+                                    &.fat {
+                                        background-color: #dc3545;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .nutrition-table {
+                    .nutrition-row {
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 8px 0;
+                        border-bottom: 1px solid #e9ecef;
+
+                        &:last-child {
+                            border-bottom: none;
+                        }
+
+                        .nutrition-label {
+                            font-weight: 500;
+                            color: #495057;
+                        }
+
+                        .nutrition-value {
+                            color: #212529;
+                        }
+                    }
+                }
+            }
+
+            .additional-info {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+
+                .units-section,
+                .allergens-section {
+                    background-color: #f8f9fa;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+                    h3 {
+                        margin-top: 0;
+                        margin-bottom: 15px;
+                        color: #495057;
+                        font-size: 18px;
+                    }
+                }
+
+                .units-container,
+                .allergens-container {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 10px;
+
+                    .unit-tag,
+                    .allergen-tag {
+                        display: inline-block;
+                        padding: 5px 10px;
+                        background-color: #e9ecef;
+                        border-radius: 4px;
+                        font-size: 14px;
+                        color: #495057;
+                    }
+                }
+
+                .no-allergens {
+                    p {
+                        color: #28a745;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 576px) {
+    .ingredient-detail {
+        .header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+
+            .actions {
+                width: 100%;
+
+                button {
+                    flex: 1;
+                }
+            }
+        }
+    }
+}

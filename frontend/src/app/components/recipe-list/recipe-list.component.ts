@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { RecipeService, Recipe, RecipeResponse } from '../../services/recipe.service';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { RecipeFilterComponent } from '../recipe-filter/recipe-filter.component';
 
 @Component({
     selector: 'app-recipe-list',
     standalone: true,
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, RecipeFilterComponent],
     templateUrl: './recipe-list.component.html',
     styleUrls: ['./recipe-list.component.scss']
 })
@@ -21,14 +21,38 @@ export class RecipeListComponent implements OnInit {
     isAdmin = false;
     currentUserId: string | null = null;
 
+    // Szűrési paraméterek
+    filters: any = {
+        search: '',
+        category: '',
+        difficulty: '',
+        minTime: null,
+        maxTime: null
+    };
+
     constructor(
         private recipeService: RecipeService,
         private authService: AuthService,
-        private router: Router
+        private router: Router,
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit(): void {
-        this.loadRecipes();
+        // URL paraméterek figyelése
+        this.route.queryParams.subscribe(params => {
+            this.currentPage = params['page'] ? parseInt(params['page']) : 1;
+
+            // Szűrők beállítása az URL paraméterek alapján
+            this.filters = {
+                search: params['search'] || '',
+                category: params['category'] || '',
+                difficulty: params['difficulty'] || '',
+                minTime: params['minTime'] ? parseInt(params['minTime']) : null,
+                maxTime: params['maxTime'] ? parseInt(params['maxTime']) : null
+            };
+
+            this.loadRecipes();
+        });
 
         // Ellenőrizzük, hogy a felhasználó admin-e és eltároljuk a user ID-t
         this.authService.user$.subscribe(user => {
@@ -41,23 +65,58 @@ export class RecipeListComponent implements OnInit {
         this.loading = true;
         this.error = null;
 
-        this.recipeService.getRecipes(this.currentPage)
-            .subscribe({
-                next: (response) => {
-                    this.recipes = response.recipes;
-                    this.pagination = response.pagination;
-                    this.loading = false;
-                },
-                error: (err) => {
-                    this.error = err.message || 'Hiba történt a receptek betöltése közben.';
-                    this.loading = false;
-                }
-            });
+        this.recipeService.getRecipes(
+            this.currentPage,
+            10,
+            this.filters.search,
+            this.filters.category,
+            this.filters.difficulty,
+            this.filters.minTime,
+            this.filters.maxTime
+        ).subscribe({
+            next: (response) => {
+                this.recipes = response.recipes;
+                this.pagination = response.pagination;
+                this.loading = false;
+            },
+            error: (err) => {
+                this.error = err.message || 'Hiba történt a receptek betöltése közben.';
+                this.loading = false;
+            }
+        });
+    }
+
+    // Szűrők alkalmazása
+    applyFilters(filters: any): void {
+        // URL paraméterek frissítése
+        const queryParams: any = {};
+
+        if (filters.search) queryParams.search = filters.search;
+        if (filters.category) queryParams.category = filters.category;
+        if (filters.difficulty) queryParams.difficulty = filters.difficulty;
+        if (filters.minTime) queryParams.minTime = filters.minTime;
+        if (filters.maxTime) queryParams.maxTime = filters.maxTime;
+
+        // Navigálás az új paraméterekkel
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: queryParams
+        });
     }
 
     changePage(page: number): void {
-        this.currentPage = page;
-        this.loadRecipes();
+        // Navigálás az új oldal paraméterrel, megtartva a szűrőket
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: {
+                page,
+                ...this.filters.search ? { search: this.filters.search } : {},
+                ...this.filters.category ? { category: this.filters.category } : {},
+                ...this.filters.difficulty ? { difficulty: this.filters.difficulty } : {},
+                ...this.filters.minTime ? { minTime: this.filters.minTime } : {},
+                ...this.filters.maxTime ? { maxTime: this.filters.maxTime } : {}
+            }
+        });
     }
 
     getDifficultyText(difficulty: string): string {

@@ -103,7 +103,14 @@
 
             <!-- Hozzávalók kezelése -->
             <div *ngIf="activeTab === 'ingredients'" class="tab-panel">
-                <h2>Hozzávalók kezelése</h2>
+                <div class="panel-header">
+                    <h2>Hozzávalók kezelése</h2>
+                    <div class="panel-actions">
+                        <button class="add-btn" (click)="addNewIngredient()">Új hozzávaló</button>
+                        <button class="view-all-btn" (click)="viewAllIngredients()">Összes hozzávaló</button>
+                    </div>
+                </div>
+
                 <div *ngIf="loadingIngredients" class="loading">Betöltés...</div>
                 <div *ngIf="ingredientsError" class="error-message">{{ ingredientsError }}</div>
                 <div *ngIf="!loadingIngredients && !ingredientsError && ingredients.length === 0" class="empty-state">
@@ -119,20 +126,25 @@
                             <th>Szénhidrát</th>
                             <th>Zsír</th>
                             <th>Mértékegységek</th>
+                            <th>Műveletek</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let ingredient of ingredients">
                             <td>{{ ingredient.name }}</td>
-                            <td>{{ ingredient.category }}</td>
-                            <td>{{ ingredient.nutritionalInfo.calories }} kcal</td>
-                            <td>{{ ingredient.nutritionalInfo.protein }} g</td>
-                            <td>{{ ingredient.nutritionalInfo.carbs }} g</td>
-                            <td>{{ ingredient.nutritionalInfo.fat }} g</td>
+                            <td>{{ getCategoryTranslation(ingredient.category) }}</td>
+                            <td>{{ ingredient.nutritionalInfo.calories || 0 }} kcal</td>
+                            <td>{{ ingredient.nutritionalInfo.protein || 0 }} g</td>
+                            <td>{{ ingredient.nutritionalInfo.carbs || 0 }} g</td>
+                            <td>{{ ingredient.nutritionalInfo.fat || 0 }} g</td>
                             <td>
                                 <span *ngFor="let unit of ingredient.commonUnits; let last = last">
                                     {{ unit }}{{ !last ? ', ' : '' }}
                                 </span>
+                            </td>
+                            <td class="actions">
+                                <button class="edit-btn" (click)="editIngredient(ingredient._id)">Szerkesztés</button>
+                                <button class="delete-btn" (click)="deleteIngredient(ingredient._id)">Törlés</button>
                             </td>
                         </tr>
                     </tbody>

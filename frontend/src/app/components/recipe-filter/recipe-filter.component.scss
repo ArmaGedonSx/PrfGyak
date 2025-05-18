@@ -1,0 +1,191 @@
+.filter-container {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: 20px;
+        color: #343a40;
+        font-weight: 600;
+    }
+
+    .loading,
+    .error {
+        text-align: center;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+    }
+
+    .error {
+        background-color: #f8d7da;
+        color: #721c24;
+
+        .retry-btn {
+            margin-top: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #c82333;
+            }
+        }
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .search-field {
+        width: 100%;
+        margin-bottom: 5px;
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 16px;
+
+            &:focus {
+                outline: none;
+                border-color: #80bdff;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+        }
+    }
+
+    .filter-section {
+        margin-bottom: 5px;
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #495057;
+            font-size: 15px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: white;
+            font-size: 15px;
+            height: 42px; // Egységes magasság a többi beviteli mezővel
+
+            &:focus {
+                outline: none;
+                border-color: #80bdff;
+            }
+        }
+
+        .time-range {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            input {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid #ced4da;
+                border-radius: 4px;
+                font-size: 15px;
+                height: 42px; // Egységes magasság
+
+                &:focus {
+                    outline: none;
+                    border-color: #80bdff;
+                }
+            }
+
+            span {
+                color: #6c757d;
+                font-weight: bold;
+            }
+        }
+    }
+
+    .reset-btn {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 15px;
+        font-size: 15px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        align-self: flex-end;
+        margin-top: 10px;
+
+        &:hover {
+            background-color: #5a6268;
+        }
+    }
+}
+
+// Tablet és asztali nézet
+@media (min-width: 768px) {
+    .filter-container {
+        form {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-areas:
+                "search search search"
+                "category difficulty time"
+                "reset reset reset";
+            gap: 20px;
+        }
+
+        .search-field {
+            grid-area: search;
+            margin-bottom: 0;
+        }
+
+        .filter-section:nth-child(2) {
+            grid-area: category;
+        }
+
+        .filter-section:nth-child(3) {
+            grid-area: difficulty;
+        }
+
+        .filter-section:nth-child(4) {
+            grid-area: time;
+        }
+
+        .reset-btn {
+            grid-area: reset;
+            justify-self: end;
+            margin-top: 15px;
+        }
+    }
+}
+
+// Kisebb képernyők (mobil)
+@media (max-width: 767px) {
+    .filter-container {
+        padding: 15px;
+
+        form {
+            gap: 15px;
+        }
+
+        .reset-btn {
+            align-self: center;
+            width: 100%;
+            margin-top: 15px;
+        }
+    }
+}

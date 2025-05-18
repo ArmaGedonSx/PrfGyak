@@ -1,0 +1,93 @@
+<div class="container">
+    <div class="header">
+        <h2>Hozzávalók</h2>
+        <button *ngIf="isAdmin" class="add-btn" [routerLink]="['/ingredients/new']">Új hozzávaló</button>
+    </div>
+
+    <div class="filters">
+        <div class="search-box">
+            <input type="text" [(ngModel)]="searchTerm" placeholder="Keresés hozzávalók között..."
+                (keyup.enter)="onSearch()">
+            <button (click)="onSearch()">Keresés</button>
+        </div>
+
+        <div class="category-filter">
+            <label for="category">Kategória:</label>
+            <select id="category" [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
+                <option value="">Összes kategória</option>
+                <option *ngFor="let category of categories" [value]="category">
+                    {{ getCategoryTranslation(category) }}
+                </option>
+            </select>
+        </div>
+
+        <button class="clear-btn" (click)="clearFilters()">Szűrők törlése</button>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+        <p>Betöltés...</p>
+    </div>
+
+    <div *ngIf="error" class="error">
+        <p>{{ error }}</p>
+    </div>
+
+    <div *ngIf="!loading && !error && ingredients.length === 0" class="no-ingredients">
+        <p>Nincsenek hozzávalók.</p>
+    </div>
+
+    <div *ngIf="!loading && !error && ingredients.length > 0" class="ingredients-table-container">
+        <table class="ingredients-table">
+            <thead>
+                <tr>
+                    <th>Kép</th>
+                    <th>Név</th>
+                    <th>Kategória</th>
+                    <th>Kalória (100g)</th>
+                    <th>Allergének</th>
+                    <th *ngIf="isAdmin">Műveletek</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let ingredient of ingredients" (click)="viewIngredient(ingredient._id)">
+                    <td class="image-cell">
+                        <div class="ingredient-image"
+                            [style.background-image]="'url(' + (ingredient.image || 'assets/images/placeholder-ingredient.jpg') + ')'">
+                        </div>
+                    </td>
+                    <td>{{ ingredient.name }}</td>
+                    <td>{{ getCategoryTranslation(ingredient.category) }}</td>
+                    <td>{{ ingredient.nutritionalInfo.calories || 0 }} kcal</td>
+                    <td>
+                        <div class="allergens">
+                            <span *ngFor="let allergen of ingredient.allergens" class="allergen-tag">
+                                {{ getAllergenTranslation(allergen) }}
+                            </span>
+                            <span *ngIf="!ingredient.allergens || ingredient.allergens.length === 0"
+                                class="allergen-tag none">
+                                Nincs
+                            </span>
+                        </div>
+                    </td>
+                    <td *ngIf="isAdmin" class="actions">
+                        <button class="edit-btn" (click)="editIngredient(ingredient._id, $event)">Szerkesztés</button>
+                        <button class="delete-btn" (click)="deleteIngredient(ingredient._id, $event)">Törlés</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="pagination && pagination.pages > 1" class="pagination">
+        <button [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)" class="pagination-button">
+            Előző
+        </button>
+
+        <span class="page-info">{{ currentPage }} / {{ pagination.pages }}</span>
+
+        <button [disabled]="currentPage === pagination.pages" (click)="changePage(currentPage + 1)"
+            class="pagination-button">
+            Következő
+        </button>
+    </div>
+</div>

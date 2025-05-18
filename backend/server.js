@@ -34,7 +34,7 @@ console.log('MongoDB URI:', mongoURI.replace(/mongodb(\+srv)?:\/\/([^:]+):([^@]+
 const mongooseOptions = {
     serverApi: {
         version: '1', // ServerApiVersion.v1 megfelelője
-        strict: true,
+        strict: false, // Changed from true to false to allow commands not in API Version 1
         deprecationErrors: true,
     },
     // Adatbázis név explicit megadása
@@ -61,6 +61,32 @@ app.use('/api/recipes', recipeRoutes);
 app.use('/api/ingredients', ingredientRoutes);
 app.use('/api/mealplans', mealPlanRoutes);
 app.use('/api/admin', adminRoutes);
+
+// Kategóriák lekérdezése külön útvonalon
+app.get('/api/recipe-categories', async (req, res) => {
+    try {
+        const { Recipe } = require('./models/index');
+
+        // Using aggregation pipeline instead of distinct
+        const result = await Recipe.aggregate([
+            // Unwind the categories array to get individual categories
+            { $unwind: "$categories" },
+            // Group by category to get unique values
+            { $group: { _id: "$categories" } },
+            // Sort alphabetically
+            { $sort: { _id: 1 } }
+        ]);
+
+        // Extract category names from the result
+        const categories = result.map(item => item._id);
+
+        console.log('Categories fetched:', categories);
+        res.json(categories);
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        res.status(500).json({ message: 'Error fetching categories', error: error.message });
+    }
+});
 
 // Test Route
 app.get('/api/test', (req, res) => {

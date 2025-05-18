@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { AdminService, User } from '../../services/admin.service';
 import { Recipe, RecipeService } from '../../services/recipe.service';
-import { Ingredient } from '../../services/ingredient.service';
+import { Ingredient, IngredientService } from '../../services/ingredient.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -41,6 +41,7 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     private adminService: AdminService,
     private recipeService: RecipeService,
+    private ingredientService: IngredientService,
     private router: Router
   ) { }
 
@@ -166,6 +167,61 @@ export class AdminDashboardComponent implements OnInit {
           console.error('Error deleting recipe:', err);
           this.recipesError = 'Nem sikerült törölni a receptet.';
           this.loadingRecipes = false;
+        }
+      });
+    }
+  }
+
+  // Kategória fordítása
+  getCategoryTranslation(category: string): string {
+    const categoryMap: { [key: string]: string } = {
+      'vegetables': 'Zöldségek',
+      'fruits': 'Gyümölcsök',
+      'grains': 'Gabonafélék',
+      'dairy': 'Tejtermékek',
+      'protein': 'Fehérjeforrások',
+      'nuts_seeds': 'Diófélék és magvak',
+      'herbs_spices': 'Fűszerek',
+      'oils_fats': 'Olajok és zsírok',
+      'sweeteners': 'Édesítőszerek',
+      'condiments': 'Ízesítők',
+      'beverages': 'Italok',
+      'other': 'Egyéb'
+    };
+
+    return categoryMap[category] || category;
+  }
+
+  // Új hozzávaló hozzáadása
+  addNewIngredient(): void {
+    this.router.navigate(['/ingredients/new']);
+  }
+
+  // Összes hozzávaló megtekintése
+  viewAllIngredients(): void {
+    this.router.navigate(['/ingredients']);
+  }
+
+  // Hozzávaló szerkesztése
+  editIngredient(ingredientId: string): void {
+    this.router.navigate(['/ingredients/edit', ingredientId]);
+  }
+
+  // Hozzávaló törlése
+  deleteIngredient(ingredientId: string): void {
+    if (confirm('Biztosan törölni szeretnéd ezt a hozzávalót?')) {
+      this.loadingIngredients = true;
+      this.ingredientsError = null;
+
+      this.ingredientService.deleteIngredient(ingredientId).subscribe({
+        next: () => {
+          // Sikeres törlés után frissítjük a listát
+          this.loadIngredients();
+        },
+        error: (err) => {
+          console.error('Error deleting ingredient:', err);
+          this.ingredientsError = 'Nem sikerült törölni a hozzávalót.';
+          this.loadingIngredients = false;
         }
       });
     }

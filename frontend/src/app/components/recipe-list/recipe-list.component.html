@@ -4,6 +4,9 @@
         <button class="add-recipe-btn" [routerLink]="['/recipes/new']">Új recept</button>
     </div>
 
+    <!-- Szűrő komponens -->
+    <app-recipe-filter [initialFilters]="filters" (filtersChanged)="applyFilters($event)"></app-recipe-filter>
+
     <div *ngIf="loading" class="loading">
         <p>Betöltés...</p>
     </div>
@@ -17,7 +20,7 @@
     </div>
 
     <div class="recipe-grid">
-        <div *ngFor="let recipe of recipes" class="recipe-card">
+        <div *ngFor="let recipe of recipes" class="recipe-card" [routerLink]="['/recipes', recipe._id]">
             <div class="recipe-image"
                 [style.background-image]="'url(' + (recipe.images && recipe.images.length > 0 ? recipe.images[0] : 'https://via.placeholder.com/300x200?text=Nincs+kép') + ')'">
             </div>

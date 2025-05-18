@@ -87,6 +87,50 @@
 
             .tab-panel {
                 animation: fadeIn 0.3s;
+
+                .panel-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 20px;
+
+                    h2 {
+                        margin-bottom: 0;
+                    }
+
+                    .panel-actions {
+                        display: flex;
+                        gap: 10px;
+
+                        .add-btn,
+                        .view-all-btn {
+                            padding: 8px 15px;
+                            border: none;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 14px;
+                            transition: background-color 0.2s;
+                        }
+
+                        .add-btn {
+                            background-color: #28a745;
+                            color: white;
+
+                            &:hover {
+                                background-color: #218838;
+                            }
+                        }
+
+                        .view-all-btn {
+                            background-color: #17a2b8;
+                            color: white;
+
+                            &:hover {
+                                background-color: #138496;
+                            }
+                        }
+                    }
+                }
             }
 
             .loading {
@@ -210,6 +254,25 @@
 
                 &.active {
                     border-bottom: 1px solid #007bff;
+                }
+            }
+        }
+
+        .tab-content {
+            .tab-panel {
+                .panel-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 15px;
+
+                    .panel-actions {
+                        width: 100%;
+
+                        .add-btn,
+                        .view-all-btn {
+                            flex: 1;
+                        }
+                    }
                 }
             }
         }

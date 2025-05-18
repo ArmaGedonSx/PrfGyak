@@ -41,6 +41,26 @@ export interface Recipe {
     updatedAt: Date;
 }
 
+export interface NutritionInfo {
+    total: {
+        calories: number;
+        protein: number;
+        carbs: number;
+        fat: number;
+        fiber: number;
+        sugar: number;
+    };
+    perServing: {
+        calories: number;
+        protein: number;
+        carbs: number;
+        fat: number;
+        fiber: number;
+        sugar: number;
+    };
+    servings: number;
+}
+
 export interface RecipeResponse {
     recipes: Recipe[];
     pagination: {
@@ -59,6 +79,11 @@ export class RecipeService {
 
     constructor(private http: HttpClient) { }
 
+    // Get all categories
+    getCategories(): Observable<string[]> {
+        return this.http.get<string[]>(`${environment.apiUrl}/api/recipe-categories`);
+    }
+
     // Get all recipes with optional filters
     getRecipes(
         page: number = 1,
@@ -66,6 +91,8 @@ export class RecipeService {
         search?: string,
         category?: string,
         difficulty?: string,
+        minTime?: number,
+        maxTime?: number,
         sort: string = 'createdAt',
         order: string = 'desc'
     ): Observable<RecipeResponse> {
@@ -81,6 +108,14 @@ export class RecipeService {
 
         if (difficulty) {
             url += `&difficulty=${difficulty}`;
+        }
+
+        if (minTime) {
+            url += `&minTime=${minTime}`;
+        }
+
+        if (maxTime) {
+            url += `&maxTime=${maxTime}`;
         }
 
         return this.http.get<RecipeResponse>(url);
@@ -124,5 +159,10 @@ export class RecipeService {
     // Get user's favorite recipes
     getFavoriteRecipes(): Observable<Recipe[]> {
         return this.http.get<Recipe[]>(`${this.apiUrl}/user/favorites`);
+    }
+
+    // Get recipe nutrition information
+    getRecipeNutrition(id: string): Observable<NutritionInfo> {
+        return this.http.get<NutritionInfo>(`${this.apiUrl}/${id}/nutrition`);
     }
 }

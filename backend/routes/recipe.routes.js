@@ -4,6 +4,34 @@ const { authMiddleware, adminMiddleware } = require('../middleware/auth.middlewa
 
 const router = express.Router();
 
+// Get all categories (public)
+router.get('/categories', async (req, res) => {
+    try {
+        const categories = await Recipe.distinct('categories');
+        res.json(categories);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching categories', error: error.message });
+    }
+});
+
+// Get user's favorite recipes (protected)
+router.get('/user/favorites', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.userId)
+            .populate({
+                path: 'favoriteRecipes',
+                populate: {
+                    path: 'author',
+                    select: 'username profilePicture'
+                }
+            });
+
+        res.json(user.favoriteRecipes);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching favorites', error: error.message });
+    }
+});
+
 // Get all recipes (public)
 router.get('/', async (req, res) => {
     try {
@@ -11,6 +39,8 @@ router.get('/', async (req, res) => {
             search,
             category,
             difficulty,
+            minTime,
+            maxTime,
             sort = 'createdAt',
             order = 'desc',
             page = 1,
@@ -36,6 +66,19 @@ router.get('/', async (req, res) => {
         // Filter by difficulty
         if (difficulty) {
             query.difficulty = difficulty;
+        }
+
+        // Filter by total time (prep + cook time)
+        if (minTime || maxTime) {
+            query.$expr = query.$expr || {};
+
+            if (minTime) {
+                query.$expr.$gte = [{ $add: ['$prepTime', '$cookTime'] }, parseInt(minTime)];
+            }
+
+            if (maxTime) {
+                query.$expr.$lte = [{ $add: ['$prepTime', '$cookTime'] }, parseInt(maxTime)];
+            }
         }
 
         // Calculate pagination
@@ -297,21 +340,63 @@ router.delete('/:id/favorite', authMiddleware, async (req, res) => {
     }
 });
 
-// Get user's favorite recipes (protected)
-router.get('/user/favorites', authMiddleware, async (req, res) => {
-    try {
-        const user = await User.findById(req.user.userId)
-            .populate({
-                path: 'favoriteRecipes',
-                populate: {
-                    path: 'author',
-                    select: 'username profilePicture'
-                }
-            });
 
-        res.json(user.favoriteRecipes);
+// Get recipe nutrition information (public)
+router.get('/:id/nutrition', async (req, res) => {
+    try {
+        const recipe = await Recipe.findById(req.params.id)
+            .populate('ingredientQuantities.ingredientId');
+
+        if (!recipe) {
+            return res.status(404).json({ message: 'Recipe not found' });
+        }
+
+        // Calculate nutrition information
+        const nutrition = {
+            calories: 0,
+            protein: 0,
+            carbs: 0,
+            fat: 0,
+            fiber: 0,
+            sugar: 0
+        };
+
+        // Sum up nutritional values from all ingredients
+        recipe.ingredientQuantities.forEach(item => {
+            const { ingredientId, quantity } = item;
+
+            // Skip if ingredient doesn't have nutritional info
+            if (!ingredientId || !ingredientId.nutritionalInfo) return;
+
+            // Add nutritional values based on quantity
+            // Nutritional values are per 100g, so we need to divide the quantity by 100
+            const factor = quantity / 100;
+
+            nutrition.calories += (ingredientId.nutritionalInfo.calories || 0) * factor;
+            nutrition.protein += (ingredientId.nutritionalInfo.protein || 0) * factor;
+            nutrition.carbs += (ingredientId.nutritionalInfo.carbs || 0) * factor;
+            nutrition.fat += (ingredientId.nutritionalInfo.fat || 0) * factor;
+            nutrition.fiber += (ingredientId.nutritionalInfo.fiber || 0) * factor;
+            nutrition.sugar += (ingredientId.nutritionalInfo.sugar || 0) * factor;
+        });
+
+        // Calculate per serving values
+        const perServing = {
+            calories: Math.round(nutrition.calories / recipe.servings),
+            protein: Math.round(nutrition.protein / recipe.servings * 10) / 10,
+            carbs: Math.round(nutrition.carbs / recipe.servings * 10) / 10,
+            fat: Math.round(nutrition.fat / recipe.servings * 10) / 10,
+            fiber: Math.round(nutrition.fiber / recipe.servings * 10) / 10,
+            sugar: Math.round(nutrition.sugar / recipe.servings * 10) / 10
+        };
+
+        res.json({
+            total: nutrition,
+            perServing: perServing,
+            servings: recipe.servings
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching favorites', error: error.message });
+        res.status(500).json({ message: 'Error calculating nutrition', error: error.message });
     }
 });
 

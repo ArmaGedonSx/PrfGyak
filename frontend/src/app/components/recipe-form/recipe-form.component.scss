@@ -53,6 +53,12 @@ h3 {
     width: 100%;
 }
 
+// Angular Material styles
+mat-form-field {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
 .form-row {
     display: flex;
     gap: 15px;

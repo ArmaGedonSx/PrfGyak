@@ -12,6 +12,7 @@
         <ng-template #loggedIn>
             <a routerLink="/home" class="nav-link">Főoldal</a>
             <a routerLink="/recipes" class="nav-link">Receptek</a>
+            <a routerLink="/ingredients" class="nav-link">Hozzávalók</a>
             <a *ngIf="(authService.user$ | async)?.role === 'admin'" routerLink="/admin"
                 class="nav-link admin-link">Admin</a>
             <div class="user-info">
