@@ -69,7 +69,6 @@ export class RecipeFormComponent implements OnInit {
         // Ellenőrizzük, hogy a felhasználó admin-e (csak információs célból)
         this.authService.user$.subscribe(user => {
             this.isAdmin = user?.role === 'admin';
-            console.log('Is admin:', this.isAdmin);
         });
 
         // Betöltjük a hozzávalókat
@@ -135,7 +134,6 @@ export class RecipeFormComponent implements OnInit {
                     return iq;
                 });
 
-                console.log('Loaded recipe:', this.recipe);
                 this.loading = false;
             },
             error: (err: any) => {
@@ -162,45 +160,11 @@ export class RecipeFormComponent implements OnInit {
     // Hozzávaló frissítése a kiválasztott ID alapján
     updateIngredient(index: number, ingredientId: string): void {
         if (!this.recipe.ingredientQuantities) return;
-
-        console.log(`Updating ingredient at index ${index} with ID: ${ingredientId}`);
-
-        // Megkeressük a kiválasztott hozzávalót
-        const selectedIngredient = this.ingredients.find(ing => ing._id === ingredientId);
-        console.log('Selected ingredient:', selectedIngredient);
-
-        if (selectedIngredient) {
-            // Frissítjük a teljes ingredientId objektumot
-            this.recipe.ingredientQuantities[index].ingredientId = {
-                _id: selectedIngredient._id,
-                name: selectedIngredient.name,
-                category: selectedIngredient.category,
-                image: selectedIngredient.image
-            };
-        } else {
-            // Ha nincs kiválasztva hozzávaló, akkor üres objektumot állítunk be
-            this.recipe.ingredientQuantities[index].ingredientId = {
-                _id: '',
-                name: '',
-                category: '',
-                image: ''
-            };
-        }
-
-        // Kiírjuk a frissített hozzávalót
-        console.log('Updated ingredient:', this.recipe.ingredientQuantities[index]);
-
-        // Kényszerítjük a DOM frissítését
-        setTimeout(() => {
-            console.log('Ingredient quantities after update:', JSON.stringify(this.recipe.ingredientQuantities));
-        }, 0);
+        // A metódus üres, mivel a kötés automatikusan frissíti az adatokat
     }
 
     // Segédfüggvény az ID-k összehasonlításához
     compareIngredientIds(ingredientId1: any, ingredientId2: any): boolean {
-        // Kiírjuk az ID-ket debug célból
-        console.log('Comparing IDs:', ingredientId1, ingredientId2);
-
         // Ha bármelyik null vagy undefined, akkor nem egyeznek
         if (!ingredientId1 || !ingredientId2) return false;
 
