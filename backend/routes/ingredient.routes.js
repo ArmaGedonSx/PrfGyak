@@ -163,7 +163,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: 'Ingredient not found' });
         }
 
-        await ingredient.remove();
+        await Ingredient.deleteOne({ _id: req.params.id });
 
         res.json({ message: 'Ingredient deleted successfully' });
     } catch (error) {

@@ -6,7 +6,8 @@ import { RecipeService, Recipe } from './recipe.service';
 import { IngredientService, Ingredient } from './ingredient.service';
 
 export interface User {
-    id: string;
+    id?: string;
+    _id?: string;  // MongoDB ObjectId
     username: string;
     email: string;
     role?: string;

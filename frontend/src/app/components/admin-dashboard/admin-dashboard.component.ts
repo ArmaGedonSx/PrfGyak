@@ -132,10 +132,21 @@ export class AdminDashboardComponent implements OnInit {
   toggleUserRole(user: User): void {
     const newRole = user.role === 'admin' ? 'user' : 'admin';
 
-    this.adminService.updateUserRole(user.id, newRole).subscribe({
+    // Használjuk a user._id-t a user.id helyett, mivel a backend _id-t vár
+    const userId = user._id || user.id;
+
+    if (!userId) {
+      console.error('User ID is undefined or null');
+      this.usersError = 'Hiányzó felhasználó azonosító.';
+      return;
+    }
+
+    this.adminService.updateUserRole(userId, newRole).subscribe({
       next: (updatedUser) => {
         // Frissítjük a felhasználót a listában
-        const index = this.users.findIndex(u => u.id === updatedUser.id);
+        // Használjuk a _id-t vagy id-t, amelyik elérhető
+        const userId = updatedUser._id || updatedUser.id;
+        const index = this.users.findIndex(u => u._id === userId || u.id === userId);
         if (index !== -1) {
           this.users[index] = updatedUser;
         }
@@ -157,6 +168,14 @@ export class AdminDashboardComponent implements OnInit {
     if (confirm('Biztosan törölni szeretnéd ezt a receptet?')) {
       this.loadingRecipes = true;
       this.recipesError = null;
+
+      // Ellenőrizzük, hogy a recipeId nem undefined
+      if (!recipeId) {
+        console.error('Recipe ID is undefined or null');
+        this.recipesError = 'Hiányzó recept azonosító.';
+        this.loadingRecipes = false;
+        return;
+      }
 
       this.recipeService.deleteRecipe(recipeId).subscribe({
         next: () => {
@@ -212,6 +231,14 @@ export class AdminDashboardComponent implements OnInit {
     if (confirm('Biztosan törölni szeretnéd ezt a hozzávalót?')) {
       this.loadingIngredients = true;
       this.ingredientsError = null;
+
+      // Ellenőrizzük, hogy az ingredientId nem undefined
+      if (!ingredientId) {
+        console.error('Ingredient ID is undefined or null');
+        this.ingredientsError = 'Hiányzó hozzávaló azonosító.';
+        this.loadingIngredients = false;
+        return;
+      }
 
       this.ingredientService.deleteIngredient(ingredientId).subscribe({
         next: () => {
