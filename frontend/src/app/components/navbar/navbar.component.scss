@@ -6,6 +6,12 @@
     background-color: #343a40;
     color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1000;
+
+    @media (max-width: 768px) {
+        padding: 1rem;
+    }
 
     .navbar-brand {
         a {
@@ -20,10 +26,73 @@
         }
     }
 
+    .hamburger-btn {
+        display: none;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30px;
+        height: 21px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        z-index: 10;
+
+        @media (max-width: 768px) {
+            display: flex;
+        }
+
+        .hamburger-line {
+            display: block;
+            height: 3px;
+            width: 100%;
+            border-radius: 10px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        &.active {
+            .hamburger-line {
+                &:nth-child(1) {
+                    transform: translateY(9px) rotate(45deg);
+                }
+
+                &:nth-child(2) {
+                    opacity: 0;
+                }
+
+                &:nth-child(3) {
+                    transform: translateY(-9px) rotate(-45deg);
+                }
+            }
+        }
+    }
+
     .navbar-menu {
         display: flex;
         align-items: center;
         gap: 1.5rem;
+
+        @media (max-width: 768px) {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 70%;
+            max-width: 300px;
+            height: 100vh;
+            background-color: #343a40;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 5rem 2rem 2rem;
+            transition: right 0.3s ease;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            z-index: 5;
+
+            &.open {
+                right: 0;
+            }
+        }
 
         .nav-link {
             color: #f8f9fa;
@@ -32,8 +101,23 @@
             border-radius: 4px;
             transition: background-color 0.2s;
 
+            @media (max-width: 768px) {
+                width: 100%;
+                padding: 1rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
             &:hover {
                 background-color: rgba(255, 255, 255, 0.1);
+            }
+
+            &.admin-link {
+                background-color: rgba(220, 53, 69, 0.2);
+                font-weight: 500;
+
+                &:hover {
+                    background-color: rgba(220, 53, 69, 0.3);
+                }
             }
         }
 
@@ -42,8 +126,46 @@
             align-items: center;
             gap: 1rem;
 
+            @media (max-width: 768px) {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
             span {
                 color: #f8f9fa;
+            }
+
+            .profile-link {
+                color: #f8f9fa;
+                text-decoration: none;
+                font-weight: 500;
+                transition: color 0.2s;
+
+                @media (max-width: 768px) {
+                    margin-bottom: 1rem;
+                }
+
+                &:hover {
+                    color: #17a2b8;
+                    text-decoration: underline;
+                }
+
+                .admin-badge {
+                    background-color: #dc3545;
+                    color: white;
+                    font-size: 0.7rem;
+                    padding: 2px 6px;
+                    border-radius: 10px;
+                    margin-left: 5px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    display: inline-block;
+                    vertical-align: middle;
+                }
             }
 
             .logout-btn {
@@ -55,10 +177,31 @@
                 cursor: pointer;
                 transition: background-color 0.2s;
 
+                @media (max-width: 768px) {
+                    width: 100%;
+                    padding: 0.75rem;
+                    text-align: center;
+                }
+
                 &:hover {
                     background-color: #c82333;
                 }
             }
+        }
+    }
+
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 4;
+
+        @media (max-width: 768px) {
+            display: block;
         }
     }
 }

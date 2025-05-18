@@ -1,0 +1,184 @@
+<div class="container">
+    <h1>{{ isEditing ? 'Recept szerkesztése' : 'Új recept létrehozása' }}</h1>
+
+    <div *ngIf="loading" class="loading">
+        <p>Betöltés...</p>
+    </div>
+
+    <div *ngIf="error" class="error-message">
+        <p>{{ error }}</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" *ngIf="!loading">
+        <!-- Alapadatok -->
+        <div class="form-section">
+            <h2>Alapadatok</h2>
+
+            <div class="form-group">
+                <label for="title">Recept neve*</label>
+                <input type="text" id="title" name="title" [(ngModel)]="recipe.title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Leírás*</label>
+                <textarea id="description" name="description" [(ngModel)]="recipe.description" required
+                    rows="4"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="prepTime">Előkészítési idő (perc)</label>
+                    <input type="number" id="prepTime" name="prepTime" [(ngModel)]="recipe.prepTime" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="cookTime">Főzési idő (perc)</label>
+                    <input type="number" id="cookTime" name="cookTime" [(ngModel)]="recipe.cookTime" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="servings">Adagok száma</label>
+                    <input type="number" id="servings" name="servings" [(ngModel)]="recipe.servings" min="1">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="difficulty">Nehézség</label>
+                <select id="difficulty" name="difficulty" [(ngModel)]="recipe.difficulty">
+                    <option value="easy">Könnyű</option>
+                    <option value="medium">Közepes</option>
+                    <option value="hard">Nehéz</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Hozzávalók -->
+        <div class="form-section">
+            <h2>Hozzávalók</h2>
+
+            <div *ngIf="recipe.ingredientQuantities && recipe.ingredientQuantities.length === 0" class="empty-message">
+                <p>Nincsenek hozzávalók. Kattints a "Hozzávaló hozzáadása" gombra.</p>
+            </div>
+
+            <div *ngIf="recipe.ingredientQuantities && recipe.ingredientQuantities.length > 0">
+                <div *ngFor="let ingredient of recipe.ingredientQuantities; let i = index" class="ingredient-row">
+                    <div class="form-group">
+                        <label [for]="'ingredient-' + i">Hozzávaló</label>
+                        <select [id]="'ingredient-' + i" [name]="'ingredientId-' + i"
+                            [(ngModel)]="ingredient.ingredientId" [compareWith]="compareIngredientIds"
+                            (ngModelChange)="updateIngredient(i, $event._id)">
+                            <option [ngValue]="null">Válassz hozzávalót</option>
+                            <option *ngFor="let ing of ingredients" [ngValue]="ing">
+                                {{ ing.name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label [for]="'quantity-' + i">Mennyiség</label>
+                        <input type="number" [id]="'quantity-' + i" [name]="'quantity-' + i"
+                            [(ngModel)]="ingredient.quantity" min="0" step="0.1">
+                    </div>
+
+                    <div class="form-group">
+                        <label [for]="'unit-' + i">Egység</label>
+                        <input type="text" [id]="'unit-' + i" [name]="'unit-' + i" [(ngModel)]="ingredient.unit">
+                    </div>
+
+                    <button type="button" class="remove-btn" (click)="removeIngredient(i)">Törlés</button>
+                </div>
+            </div>
+
+            <button type="button" class="add-btn" (click)="addIngredient()">Hozzávaló hozzáadása</button>
+        </div>
+
+        <!-- Elkészítési lépések -->
+        <div class="form-section">
+            <h2>Elkészítési lépések</h2>
+
+            <div *ngIf="recipe.steps && recipe.steps.length > 0">
+                <div *ngFor="let step of recipe.steps; let i = index" class="step-row">
+                    <div class="form-group">
+                        <label [for]="'step-' + i">{{ i + 1 }}. lépés</label>
+                        <textarea [id]="'step-' + i" [name]="'step-' + i" [(ngModel)]="recipe.steps[i]"
+                            rows="2"></textarea>
+                    </div>
+
+                    <button type="button" class="remove-btn" (click)="removeStep(i)"
+                        [disabled]="recipe.steps && recipe.steps.length <= 1">Törlés</button>
+                </div>
+            </div>
+
+            <button type="button" class="add-btn" (click)="addStep()">Lépés hozzáadása</button>
+        </div>
+
+        <!-- Kategóriák és címkék -->
+        <div class="form-section">
+            <h2>Kategóriák és címkék</h2>
+
+            <div class="form-subsection">
+                <h3>Kategóriák</h3>
+
+                <div *ngIf="recipe.categories && recipe.categories.length > 0">
+                    <div *ngFor="let category of recipe.categories; let i = index" class="tag-row">
+                        <div class="form-group">
+                            <input type="text" [id]="'category-' + i" [name]="'category-' + i"
+                                [(ngModel)]="recipe.categories[i]" placeholder="pl. főétel, desszert, leves">
+                        </div>
+
+                        <button type="button" class="remove-btn" (click)="removeCategory(i)"
+                            [disabled]="recipe.categories && recipe.categories.length <= 1">Törlés</button>
+                    </div>
+                </div>
+
+                <button type="button" class="add-btn" (click)="addCategory()">Kategória hozzáadása</button>
+            </div>
+
+            <div class="form-subsection">
+                <h3>Címkék</h3>
+
+                <div *ngIf="recipe.tags && recipe.tags.length > 0">
+                    <div *ngFor="let tag of recipe.tags; let i = index" class="tag-row">
+                        <div class="form-group">
+                            <input type="text" [id]="'tag-' + i" [name]="'tag-' + i" [(ngModel)]="recipe.tags[i]"
+                                placeholder="pl. gyors, olcsó, egészséges">
+                        </div>
+
+                        <button type="button" class="remove-btn" (click)="removeTag(i)">Törlés</button>
+                    </div>
+                </div>
+
+                <button type="button" class="add-btn" (click)="addTag()">Címke hozzáadása</button>
+            </div>
+        </div>
+
+        <!-- Képek -->
+        <div class="form-section">
+            <h2>Képek</h2>
+
+            <div *ngIf="recipe.images && recipe.images.length > 0">
+                <div *ngFor="let image of recipe.images; let i = index" class="image-row">
+                    <div class="form-group">
+                        <label [for]="'image-' + i">Kép URL</label>
+                        <input type="text" [id]="'image-' + i" [name]="'image-' + i" [(ngModel)]="recipe.images[i]"
+                            placeholder="https://...">
+                    </div>
+
+                    <div *ngIf="recipe.images[i]" class="image-preview">
+                        <img [src]="recipe.images[i]" alt="Előnézet">
+                    </div>
+
+                    <button type="button" class="remove-btn" (click)="removeImage(i)">Törlés</button>
+                </div>
+            </div>
+
+            <button type="button" class="add-btn" (click)="addImage()">Kép hozzáadása</button>
+        </div>
+
+        <!-- Gombok -->
+        <div class="form-actions">
+            <button type="button" class="cancel-btn" (click)="router.navigate(['/recipes'])">Mégse</button>
+            <button type="submit" class="submit-btn">{{ isEditing ? 'Mentés' : 'Létrehozás' }}</button>
+        </div>
+    </form>
+</div>

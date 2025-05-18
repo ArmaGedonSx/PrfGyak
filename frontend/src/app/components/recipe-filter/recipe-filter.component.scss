@@ -1,0 +1,228 @@
+.filter-container {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: 20px;
+        color: #343a40;
+        font-weight: 600;
+    }
+
+    .loading,
+    .error {
+        text-align: center;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+    }
+
+    .error {
+        background-color: #f8d7da;
+        color: #721c24;
+
+        .retry-btn {
+            margin-top: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #c82333;
+            }
+        }
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .search-field {
+        width: 100%;
+        margin-bottom: 5px;
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 16px;
+
+            &:focus {
+                outline: none;
+                border-color: #80bdff;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+        }
+    }
+
+    .filter-section {
+        margin-bottom: 5px;
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #495057;
+            font-size: 15px;
+
+            @media (max-width: 576px) {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+        }
+
+        select {
+            width: 100%;
+            padding: 10px 30px 10px 12px; // Increased right padding for the dropdown arrow
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: white;
+            font-size: 15px;
+            height: 42px; // Egységes magasság a többi beviteli mezővel
+            appearance: none; // Remove default arrow
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23495057' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+
+            @media (max-width: 576px) {
+                height: 46px; // Nagyobb érintési felület mobilon
+                font-size: 16px;
+                padding: 10px 30px 10px 12px;
+            }
+
+            &:focus {
+                outline: none;
+                border-color: #80bdff;
+            }
+        }
+
+        .time-range {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            @media (max-width: 576px) {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            input {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid #ced4da;
+                border-radius: 4px;
+                font-size: 15px;
+                height: 42px; // Egységes magasság
+
+                @media (max-width: 576px) {
+                    width: 100%;
+                    height: 46px; // Nagyobb érintési felület mobilon
+                    font-size: 16px; // Jobb olvashatóság mobilon
+                }
+
+                &:focus {
+                    outline: none;
+                    border-color: #80bdff;
+                }
+            }
+
+            span {
+                color: #6c757d;
+                font-weight: bold;
+
+                @media (max-width: 576px) {
+                    display: none; // Elrejtjük a kötőjelet mobilon
+                }
+            }
+        }
+    }
+
+    .reset-btn {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 15px;
+        font-size: 15px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        align-self: flex-end;
+        margin-top: 10px;
+
+        &:hover {
+            background-color: #5a6268;
+        }
+    }
+}
+
+// Minden képernyőméretre érvényes elrendezés
+.filter-container {
+    form {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "search"
+            "category"
+            "difficulty"
+            "time"
+            "reset";
+        gap: 15px;
+    }
+
+    .search-field {
+        grid-area: search;
+        margin-bottom: 0;
+    }
+
+    .filter-section:nth-child(2) {
+        grid-area: category;
+    }
+
+    .filter-section:nth-child(3) {
+        grid-area: difficulty;
+    }
+
+    .filter-section:nth-child(4) {
+        grid-area: time;
+    }
+
+    .reset-btn {
+        grid-area: reset;
+        justify-self: center;
+        width: 100%;
+        max-width: 300px;
+        margin-top: 15px;
+    }
+}
+
+// Kisebb képernyők (mobil)
+@media (max-width: 767px) {
+    .filter-container {
+        padding: 15px;
+
+        form {
+            gap: 15px;
+        }
+
+        .reset-btn {
+            align-self: center;
+            width: 100%;
+            margin-top: 15px;
+        }
+    }
+}

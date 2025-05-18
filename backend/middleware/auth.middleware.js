@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 
+// Hosszabb lejárati idő (7 nap)
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_EXPIRATION = '7d'; // 7 nap
 
 const authMiddleware = (req, res, next) => {
     try {
@@ -15,14 +17,29 @@ const authMiddleware = (req, res, next) => {
         const decoded = jwt.verify(token, JWT_SECRET);
 
         // Add user data to request
-        req.user = decoded;
+        req.user = {
+            ...decoded,
+            role: decoded.role || 'user' // Alapértelmezett érték, ha nincs role
+        };
         next();
     } catch (error) {
-        return res.status(401).json({ message: 'Invalid token' });
+        console.error('Auth middleware error:', error.message);
+        return res.status(401).json({ message: 'Invalid token', error: error.message });
     }
+};
+
+// Admin jogosultság ellenőrzése
+const adminMiddleware = (req, res, next) => {
+    // Ellenőrizzük, hogy a felhasználó be van-e jelentkezve és admin-e
+    if (!req.user || req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Nincs jogosultságod ehhez a művelethez' });
+    }
+    next();
 };
 
 module.exports = {
     authMiddleware,
-    JWT_SECRET
+    adminMiddleware,
+    JWT_SECRET,
+    JWT_EXPIRATION
 };

@@ -4,26 +4,13 @@ FROM node:20
 # Set working directory
 WORKDIR /app
 
-# Install Angular CLI globally
-RUN npm install -g @angular/cli
-
 # Backend setup
-COPY backend/package.json /app/backend/
-WORKDIR /app/backend
+COPY backend/package.json /app/
 RUN npm install
-COPY backend/ /app/backend/
+COPY backend/ /app/
 
-# Frontend setup
-COPY frontend/package.json /app/frontend/
-WORKDIR /app/frontend
-RUN npm install
-COPY frontend/ /app/frontend/
+# Expose backend port
+EXPOSE 3000
 
-# Set permissions for node_modules
-RUN chmod -R 777 /app/backend/node_modules /app/frontend/node_modules
-
-# Expose ports
-EXPOSE 4200 3000
-
-# Start both servers
-CMD ["sh", "-c", "cd /app/backend && node server.js & cd /app/frontend && ng serve --host 0.0.0.0 --poll=2000"]
+# Start backend server
+CMD ["node", "server.js"]

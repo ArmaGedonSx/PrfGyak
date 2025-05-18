@@ -1,0 +1,161 @@
+<div class="recipe-detail-container">
+    <div *ngIf="loading" class="loading">
+        <p>Betöltés...</p>
+    </div>
+
+    <div *ngIf="error" class="error">
+        <p>{{ error }}</p>
+    </div>
+
+    <div *ngIf="!loading && !error && recipe" class="recipe-content">
+        <!-- Recipe Header -->
+        <div class="recipe-header">
+            <div class="recipe-image" *ngIf="recipe.images && recipe.images.length > 0">
+                <img [src]="recipe.images[0]" [alt]="recipe.title">
+            </div>
+            <div class="recipe-title-section">
+                <h1>{{ recipe.title }}</h1>
+                <div class="recipe-meta">
+                    <span class="difficulty" [ngClass]="recipe.difficulty">
+                        {{ getDifficultyText(recipe.difficulty) }}
+                    </span>
+                    <span class="time">
+                        <i class="time-icon">⏱️</i> {{ recipe.prepTime + recipe.cookTime }} perc
+                    </span>
+                    <span class="servings">
+                        <i class="servings-icon">👥</i> {{ recipe.servings }} adag
+                    </span>
+                    <span class="rating" *ngIf="recipe.averageRating > 0">
+                        <span class="stars">
+                            <span *ngFor="let star of getStars(recipe.averageRating)">⭐</span>
+                        </span>
+                        <span class="rating-value">{{ recipe.averageRating.toFixed(1) }}</span>
+                    </span>
+                </div>
+                <div class="recipe-author" *ngIf="recipe.author">
+                    <img [src]="recipe.author.profilePicture" [alt]="recipe.author.username" class="author-avatar">
+                    <span>{{ recipe.author.username }}</span>
+                </div>
+                <div class="recipe-actions">
+                    <button class="favorite-btn" (click)="toggleFavorite()">
+                        {{ isFavorite ? '❤️ Kedvenc' : '🤍 Kedvencekhez' }}
+                    </button>
+                    <div *ngIf="canEditRecipe()" class="edit-actions">
+                        <button class="edit-btn" (click)="editRecipe()">Szerkesztés</button>
+                        <button class="delete-btn" (click)="deleteRecipe()">Törlés</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recipe Description -->
+        <div class="recipe-description">
+            <h2>Leírás</h2>
+            <p>{{ recipe.description }}</p>
+        </div>
+
+        <!-- Nutritional Information -->
+        <div class="nutrition-section" *ngIf="nutritionInfo">
+            <h2>Tápanyagtartalom</h2>
+            <div class="nutrition-content">
+                <div class="nutrition-table">
+                    <h3>Egy adagra ({{ nutritionInfo.perServing.calories }} kcal)</h3>
+                    <table>
+                        <tr>
+                            <td>Fehérje:</td>
+                            <td>{{ nutritionInfo.perServing.protein }}g</td>
+                        </tr>
+                        <tr>
+                            <td>Szénhidrát:</td>
+                            <td>{{ nutritionInfo.perServing.carbs }}g</td>
+                        </tr>
+                        <tr>
+                            <td>Zsír:</td>
+                            <td>{{ nutritionInfo.perServing.fat }}g</td>
+                        </tr>
+                        <tr>
+                            <td>Rost:</td>
+                            <td>{{ nutritionInfo.perServing.fiber }}g</td>
+                        </tr>
+                        <tr>
+                            <td>Cukor:</td>
+                            <td>{{ nutritionInfo.perServing.sugar }}g</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="nutrition-chart">
+                    <div class="macro-distribution" *ngIf="getMacroPercentages()">
+                        <div class="macro-item protein" [style.width.%]="getMacroPercentages()?.protein">
+                            <span *ngIf="getMacroPercentages()?.protein! > 10">{{ getMacroPercentages()?.protein }}%
+                                Fehérje</span>
+                        </div>
+                        <div class="macro-item carbs" [style.width.%]="getMacroPercentages()?.carbs">
+                            <span *ngIf="getMacroPercentages()?.carbs! > 10">{{ getMacroPercentages()?.carbs }}%
+                                Szénhidrát</span>
+                        </div>
+                        <div class="macro-item fat" [style.width.%]="getMacroPercentages()?.fat">
+                            <span *ngIf="getMacroPercentages()?.fat! > 10">{{ getMacroPercentages()?.fat }}% Zsír</span>
+                        </div>
+                    </div>
+                    <div class="macro-legend">
+                        <div class="legend-item">
+                            <span class="color-box protein"></span>
+                            <span>Fehérje: {{ getMacroPercentages()?.protein }}%</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="color-box carbs"></span>
+                            <span>Szénhidrát: {{ getMacroPercentages()?.carbs }}%</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="color-box fat"></span>
+                            <span>Zsír: {{ getMacroPercentages()?.fat }}%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ingredients -->
+        <div class="ingredients-section">
+            <h2>Hozzávalók</h2>
+            <ul class="ingredients-list">
+                <li *ngFor="let item of recipe.ingredientQuantities">
+                    <span class="ingredient-quantity">{{ item.quantity }} {{ item.unit }}</span>
+                    <span class="ingredient-name">{{ item.ingredientId.name }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Steps -->
+        <div class="steps-section">
+            <h2>Elkészítés</h2>
+            <ol class="steps-list">
+                <li *ngFor="let step of recipe.steps; let i = index">
+                    <div class="step-number">{{ i + 1 }}</div>
+                    <div class="step-text">{{ step }}</div>
+                </li>
+            </ol>
+        </div>
+
+        <!-- Categories and Tags -->
+        <div class="categories-tags-section">
+            <div class="categories" *ngIf="recipe.categories && recipe.categories.length > 0">
+                <h3>Kategóriák:</h3>
+                <div class="tag-list">
+                    <span class="tag category-tag" *ngFor="let category of recipe.categories">{{ category }}</span>
+                </div>
+            </div>
+            <div class="tags" *ngIf="recipe.tags && recipe.tags.length > 0">
+                <h3>Címkék:</h3>
+                <div class="tag-list">
+                    <span class="tag" *ngFor="let tag of recipe.tags">{{ tag }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && !error && !recipe" class="not-found">
+        <p>A recept nem található.</p>
+        <button routerLink="/recipes">Vissza a receptekhez</button>
+    </div>
+</div>

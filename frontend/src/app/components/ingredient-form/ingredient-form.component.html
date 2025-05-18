@@ -1,0 +1,169 @@
+<div class="container">
+    <div class="header">
+        <h2>{{ isEditMode ? 'Hozzávaló szerkesztése' : 'Új hozzávaló' }}</h2>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+        <p>Betöltés...</p>
+    </div>
+
+    <div *ngIf="error" class="error">
+        <p>{{ error }}</p>
+    </div>
+
+    <div *ngIf="success" class="success">
+        <p>{{ success }}</p>
+    </div>
+
+    <form [formGroup]="ingredientForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+        <div class="form-section">
+            <h3>Alapadatok</h3>
+
+            <div class="form-group">
+                <label for="name">Név <span class="required">*</span></label>
+                <input type="text" id="name" formControlName="name" [class.invalid]="isFieldInvalid('name')">
+                <div class="error-message" *ngIf="isFieldInvalid('name')">
+                    <span *ngIf="ingredientForm.get('name')?.errors?.['required']">A név megadása kötelező.</span>
+                    <span *ngIf="ingredientForm.get('name')?.errors?.['minlength']">A névnek legalább 2 karakterből kell
+                        állnia.</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Kategória <span class="required">*</span></label>
+                <select id="category" formControlName="category" [class.invalid]="isFieldInvalid('category')">
+                    <option value="">Válassz kategóriát</option>
+                    <option *ngFor="let option of categoryOptions" [value]="option.value">
+                        {{ option.label }}
+                    </option>
+                </select>
+                <div class="error-message" *ngIf="isFieldInvalid('category')">
+                    <span *ngIf="ingredientForm.get('category')?.errors?.['required']">A kategória kiválasztása
+                        kötelező.</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Leírás</label>
+                <textarea id="description" formControlName="description" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Kép URL</label>
+                <input type="text" id="image" formControlName="image" placeholder="https://example.com/image.jpg">
+                <div class="image-preview" *ngIf="ingredientForm.get('image')?.value">
+                    <img [src]="ingredientForm.get('image')?.value" alt="Hozzávaló előnézet">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Tápanyagtartalom (100g-ra)</h3>
+
+            <div formGroupName="nutritionalInfo" class="nutritional-info">
+                <div class="form-group">
+                    <label for="calories">Kalória (kcal) <span class="required">*</span></label>
+                    <input type="number" id="calories" formControlName="calories" min="0"
+                        [class.invalid]="isNutritionalFieldInvalid('calories')">
+                    <div class="error-message" *ngIf="isNutritionalFieldInvalid('calories')">
+                        <span *ngIf="ingredientForm.get('nutritionalInfo.calories')?.errors?.['required']">A kalória
+                            megadása kötelező.</span>
+                        <span *ngIf="ingredientForm.get('nutritionalInfo.calories')?.errors?.['min']">A kalória nem
+                            lehet negatív.</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="protein">Fehérje (g) <span class="required">*</span></label>
+                    <input type="number" id="protein" formControlName="protein" min="0"
+                        [class.invalid]="isNutritionalFieldInvalid('protein')">
+                    <div class="error-message" *ngIf="isNutritionalFieldInvalid('protein')">
+                        <span *ngIf="ingredientForm.get('nutritionalInfo.protein')?.errors?.['required']">A fehérje
+                            megadása kötelező.</span>
+                        <span *ngIf="ingredientForm.get('nutritionalInfo.protein')?.errors?.['min']">A fehérje nem lehet
+                            negatív.</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="carbs">Szénhidrát (g) <span class="required">*</span></label>
+                    <input type="number" id="carbs" formControlName="carbs" min="0"
+                        [class.invalid]="isNutritionalFieldInvalid('carbs')">
+                    <div class="error-message" *ngIf="isNutritionalFieldInvalid('carbs')">
+                        <span *ngIf="ingredientForm.get('nutritionalInfo.carbs')?.errors?.['required']">A szénhidrát
+                            megadása kötelező.</span>
+                        <span *ngIf="ingredientForm.get('nutritionalInfo.carbs')?.errors?.['min']">A szénhidrát nem
+                            lehet negatív.</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fat">Zsír (g) <span class="required">*</span></label>
+                    <input type="number" id="fat" formControlName="fat" min="0"
+                        [class.invalid]="isNutritionalFieldInvalid('fat')">
+                    <div class="error-message" *ngIf="isNutritionalFieldInvalid('fat')">
+                        <span *ngIf="ingredientForm.get('nutritionalInfo.fat')?.errors?.['required']">A zsír megadása
+                            kötelező.</span>
+                        <span *ngIf="ingredientForm.get('nutritionalInfo.fat')?.errors?.['min']">A zsír nem lehet
+                            negatív.</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fiber">Rost (g) <span class="required">*</span></label>
+                    <input type="number" id="fiber" formControlName="fiber" min="0"
+                        [class.invalid]="isNutritionalFieldInvalid('fiber')">
+                    <div class="error-message" *ngIf="isNutritionalFieldInvalid('fiber')">
+                        <span *ngIf="ingredientForm.get('nutritionalInfo.fiber')?.errors?.['required']">A rost megadása
+                            kötelező.</span>
+                        <span *ngIf="ingredientForm.get('nutritionalInfo.fiber')?.errors?.['min']">A rost nem lehet
+                            negatív.</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="sugar">Cukor (g) <span class="required">*</span></label>
+                    <input type="number" id="sugar" formControlName="sugar" min="0"
+                        [class.invalid]="isNutritionalFieldInvalid('sugar')">
+                    <div class="error-message" *ngIf="isNutritionalFieldInvalid('sugar')">
+                        <span *ngIf="ingredientForm.get('nutritionalInfo.sugar')?.errors?.['required']">A cukor megadása
+                            kötelező.</span>
+                        <span *ngIf="ingredientForm.get('nutritionalInfo.sugar')?.errors?.['min']">A cukor nem lehet
+                            negatív.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Mértékegységek</h3>
+            <p class="help-text">Válaszd ki a hozzávalóhoz használható mértékegységeket.</p>
+
+            <div class="units-container">
+                <div *ngFor="let unit of commonUnitOptions" class="unit-tag"
+                    [class.selected]="isCommonUnitSelected(unit)" (click)="toggleCommonUnit(unit)">
+                    {{ unit }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Allergének</h3>
+            <p class="help-text">Válaszd ki a hozzávalóhoz tartozó allergéneket.</p>
+
+            <div class="allergens-container">
+                <div *ngFor="let allergen of allergenOptions" class="allergen-tag"
+                    [class.selected]="isAllergenSelected(allergen.value)" (click)="toggleAllergen(allergen.value)">
+                    {{ allergen.label }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="cancel-btn" (click)="cancel()">Mégse</button>
+            <button type="submit" class="submit-btn" [disabled]="ingredientForm.invalid">
+                {{ isEditMode ? 'Mentés' : 'Létrehozás' }}
+            </button>
+        </div>
+    </form>
+</div>

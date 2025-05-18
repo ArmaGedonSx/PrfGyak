@@ -1,0 +1,69 @@
+<div class="container">
+    <div class="header">
+        <h2>Receptek</h2>
+        <button class="add-recipe-btn" [routerLink]="['/recipes/new']">Új recept</button>
+    </div>
+
+    <!-- Szűrő komponens -->
+    <app-recipe-filter [initialFilters]="filters" (filtersChanged)="applyFilters($event)"></app-recipe-filter>
+
+    <div *ngIf="loading" class="loading">
+        <p>Betöltés...</p>
+    </div>
+
+    <div *ngIf="error" class="error">
+        <p>Hiba történt: {{ error }}</p>
+    </div>
+
+    <div *ngIf="!loading && !error && recipes.length === 0" class="no-recipes">
+        <p>Nincsenek receptek.</p>
+    </div>
+
+    <div class="recipe-grid">
+        <div *ngFor="let recipe of recipes" class="recipe-card" [routerLink]="['/recipes', recipe._id]">
+            <div class="recipe-image"
+                [style.background-image]="'url(' + (recipe.images && recipe.images.length > 0 ? recipe.images[0] : 'https://via.placeholder.com/300x200?text=Nincs+kép') + ')'">
+            </div>
+            <div class="recipe-content">
+                <h3>{{ recipe.title }}</h3>
+                <p class="recipe-description">{{ recipe.description }}</p>
+                <div class="recipe-meta">
+                    <span class="difficulty" [ngClass]="recipe.difficulty">
+                        {{ getDifficultyText(recipe.difficulty) }}
+                    </span>
+                    <span class="time">
+                        {{ recipe.prepTime + recipe.cookTime }} perc
+                    </span>
+                </div>
+                <div class="recipe-author" *ngIf="recipe.author">
+                    <img [src]="recipe.author.profilePicture" alt="{{ recipe.author.username }}" class="author-avatar">
+                    <span>{{ recipe.author.username }}</span>
+                </div>
+                <div class="recipe-rating" *ngIf="recipe.averageRating > 0">
+                    <span class="stars">
+                        <span *ngFor="let star of getStars(recipe.averageRating)">⭐</span>
+                    </span>
+                    <span class="rating-value">{{ recipe.averageRating.toFixed(1) }}</span>
+                </div>
+                <!-- Szerkesztés és törlés gombok, ha a felhasználó szerkesztheti a receptet -->
+                <div class="recipe-actions" *ngIf="canEditRecipe(recipe)">
+                    <button class="edit-btn" (click)="editRecipe(recipe._id, $event)">Szerkesztés</button>
+                    <button class="delete-btn" (click)="deleteRecipe(recipe._id, $event)">Törlés</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="pagination && pagination.pages > 1" class="pagination">
+        <button [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)" class="pagination-button">
+            Előző
+        </button>
+
+        <span class="page-info">{{ currentPage }} / {{ pagination.pages }}</span>
+
+        <button [disabled]="currentPage === pagination.pages" (click)="changePage(currentPage + 1)"
+            class="pagination-button">
+            Következő
+        </button>
+    </div>
+</div>

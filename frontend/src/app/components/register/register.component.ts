@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
     styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
+    username: string = '';
     email: string = '';
     password: string = '';
     confirmPassword: string = '';
@@ -33,17 +34,28 @@ export class RegisterComponent {
     }
 
     onSubmit() {
+        if (!this.username) {
+            this.error = 'A felhasználónév megadása kötelező!';
+            return;
+        }
+
         if (this.password !== this.confirmPassword) {
             this.error = 'A jelszavak nem egyeznek!';
             return;
         }
 
-        this.authService.register(this.email, this.password).subscribe({
+        this.authService.register(this.username, this.email, this.password).subscribe({
             next: () => {
                 this.router.navigate(['/login']);
             },
             error: (err) => {
-                this.error = 'Hiba történt a regisztráció során!';
+                if (err.error && err.error.field === 'username') {
+                    this.error = 'Ez a felhasználónév már foglalt!';
+                } else if (err.error && err.error.field === 'email') {
+                    this.error = 'Ez az email cím már regisztrálva van!';
+                } else {
+                    this.error = 'Hiba történt a regisztráció során!';
+                }
                 console.error('Registration error:', err);
             }
         });

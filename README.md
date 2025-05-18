@@ -1,24 +1,50 @@
-# Docker MEAN Stack Project
+# Receptgyűjtemény és Ételtervező Alkalmazás
 
-Ez a projekt egy MEAN (MongoDB, Express.js, Angular, Node.js) stack alkalmazás Docker környezetben.
+Ez a projekt egy MEAN (MongoDB, Express.js, Angular, Node.js) stack alkalmazás, amely lehetővé teszi a felhasználók számára receptek böngészését, létrehozását, értékelését és étrendek összeállítását.
+
+## Funkciók
+
+- **Felhasználókezelés**: Regisztráció, bejelentkezés, profil kezelése
+- **Receptek kezelése**: Receptek létrehozása, szerkesztése, törlése, értékelése
+- **Receptek böngészése**: Keresés, szűrés kategória, nehézség és egyéb szempontok szerint
+- **Hozzávalók kezelése**: Hozzávalók böngészése, tápanyagtartalom megtekintése
+- **Étrendek összeállítása**: Heti étrendek létrehozása, receptek hozzáadása
+- **Bevásárlólista generálása**: Automatikus bevásárlólista készítése az étrendek alapján
+- **Tápanyagtartalom számítás**: Receptek és étrendek tápanyagtartalmának kiszámítása
+
+## Technológiák
+
+- **Frontend**: Angular 17, TypeScript, SCSS
+- **Backend**: Node.js, Express.js, TypeScript
+- **Adatbázis**: MongoDB Atlas (felhő alapú)
+- **Konténerizáció**: Docker, Docker Compose
+- **Autentikáció**: JWT (JSON Web Token)
 
 ## Előfeltételek
 
+### Backend
 - Docker
 - Docker Compose
 
-Nincs szükség Node.js, MongoDB vagy egyéb függőségek lokális telepítésére, minden a Docker konténerekben fut.
+### Frontend
+- Node.js 20.x (ajánlott: 20.18.3 vagy újabb)
+- Angular CLI 17.0.0 (`npm install -g @angular/cli@17.0.0`)
+
 
 ## Projekt Struktúra
 
 ```
-Angular-project/
+PrfGyak/
 ├── frontend/          # Angular alkalmazás
-│   └── src/          # Angular forrásfájlok
-├── backend/          
-│   ├── package.json  # Node.js függőségek
-│   └── server.js     # Express szerver
-├── Dockerfile        # Docker konfiguráció
+│   ├── src/           # Angular forrásfájlok
+│   └── ...            # Angular konfigurációs fájlok
+├── backend/           # Node.js backend
+│   ├── models/        # MongoDB modellek
+│   ├── routes/        # API végpontok
+│   ├── middleware/    # Middleware-ek (pl. autentikáció)
+│   ├── server.js      # Express szerver
+│   └── seed.js        # Adatbázis seed script
+├── Dockerfile         # Docker konfiguráció
 └── docker-compose.yml # Docker Compose konfiguráció
 ```
 
@@ -30,86 +56,203 @@ git clone <repository-url>
 cd PrfGyak
 ```
 
-2. Ajánlott sorrend a konténerek kezeléséhez:
+2. Backend indítása Docker-rel:
 
 ```bash
 # Leállítás és tisztítás (ha már futott korábban)
-sudo docker-compose down
-
-# Tiszta build újraindításhoz
-sudo docker-compose build --no-cache
+sudo docker-compose down --remove-orphans -v
 
 # Konténerek indítása
-sudo docker-compose up
+sudo docker-compose down --remove-orphans -v && sudo docker-compose up --build
 ```
 
-Vagy egy parancsban:
+3. Frontend függőségek telepítése és indítása:
+
 ```bash
-sudo docker-compose down && sudo docker-compose build --no-cache && sudo docker-compose up
+# Jogosultságok beállítása (ha szükséges)
+sudo chown -R $USER:$USER ./frontend
+
+# Frontend könyvtárba lépés
+cd frontend
+
+# Függőségek telepítése
+npm install
+
+# Angular alkalmazás indítása
+ng serve
 ```
 
-A build folyamat:
-1. Létrehozza a MongoDB konténert
-   - Adatok perzisztens tárolása volume-ban
-   - Port: 27017
-2. Felépíti az Angular projektet:
-   - Routing engedélyezve
-   - SCSS stílusok
-   - API proxy konfiguráció
-   - Hot-reload engedélyezve fejlesztéshez
-   - Port: 4200
-3. Telepíti az összes függőséget
-4. Elindítja a szervereket:
-   - Express backend (Port: 3000)
-   - Angular development server
-   - MongoDB adatbázis
+4. Seed adatok betöltése (opcionális):
+
+```bash
+# Új terminálban
+sudo docker exec -it mean-backend node seed.js
+```
 
 ## Elérhetőség
 
 - Frontend: http://localhost:4200
 - Backend API: http://localhost:3000
-- MongoDB: mongodb://localhost:27017
+- API dokumentáció: http://localhost:3000/api-docs (ha implementálva van)
+- MongoDB: MongoDB Atlas felhő szolgáltatás
+
+## API Végpontok
+
+### Autentikáció
+- `POST /api/auth/register` - Regisztráció
+- `POST /api/auth/login` - Bejelentkezés
+- `GET /api/auth/profile` - Felhasználói profil lekérése
+
+### Receptek
+- `GET /api/recipes` - Receptek listázása
+- `GET /api/recipes/:id` - Recept részleteinek lekérése
+- `POST /api/recipes` - Új recept létrehozása
+- `PUT /api/recipes/:id` - Recept szerkesztése
+- `DELETE /api/recipes/:id` - Recept törlése
+- `POST /api/recipes/:id/rate` - Recept értékelése
+- `POST /api/recipes/:id/favorite` - Recept hozzáadása a kedvencekhez
+- `DELETE /api/recipes/:id/favorite` - Recept eltávolítása a kedvencekből
+
+### Hozzávalók
+- `GET /api/ingredients` - Hozzávalók listázása
+- `GET /api/ingredients/:id` - Hozzávaló részleteinek lekérése
+- `POST /api/ingredients` - Új hozzávaló létrehozása
+- `PUT /api/ingredients/:id` - Hozzávaló szerkesztése
+- `DELETE /api/ingredients/:id` - Hozzávaló törlése
+
+### Étrendek
+- `GET /api/mealplans` - Étrendek listázása
+- `GET /api/mealplans/:id` - Étrend részleteinek lekérése
+- `POST /api/mealplans` - Új étrend létrehozása
+- `PUT /api/mealplans/:id` - Étrend szerkesztése
+- `DELETE /api/mealplans/:id` - Étrend törlése
+- `GET /api/mealplans/:id/shopping-list` - Bevásárlólista generálása
+- `GET /api/mealplans/:id/nutrition` - Tápanyagtartalom számítása
+
+## MongoDB Atlas
+
+A projekt MongoDB Atlas-t használ a lokális MongoDB helyett. Ez lehetővé teszi, hogy:
+- Minden fejlesztői környezet ugyanazt az adatbázist használja
+- Nincs szükség lokális MongoDB telepítésre vagy konténerre
+- Az adatok automatikusan szinkronban vannak a különböző környezetek között
+
+### MongoDB Atlas beállítása (ha még nem tetted meg)
+
+1. **Regisztráció és bejelentkezés**:
+   - Látogass el a [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) oldalára
+   - Regisztrálj egy ingyenes fiókot vagy jelentkezz be
+
+2. **Új klaszter létrehozása**:
+   - Kattints a "Build a Cluster" gombra
+   - Válaszd az ingyenes "Shared" opciót
+   - Válassz egy cloud providert és régiót
+   - Kattints a "Create Cluster" gombra
+
+3. **Adatbázis-hozzáférés beállítása**:
+   - A bal oldali menüben válaszd a "Database Access" opciót
+   - Kattints az "Add New Database User" gombra
+   - Adj meg egy felhasználónevet és jelszót
+   - Állítsd be a megfelelő jogosultságokat
+
+4. **Hálózati hozzáférés beállítása**:
+   - A bal oldali menüben válaszd a "Network Access" opciót
+   - Kattints az "Add IP Address" gombra
+   - Fejlesztéshez választhatod a "Allow Access from Anywhere" opciót
+
+5. **Kapcsolódási string megszerzése**:
+   - A klaszter oldalán kattints a "Connect" gombra
+   - Válaszd a "Drivers" opciót (Connect to your application)
+   - Válaszd a "Node.js" drivert
+   - Másold ki a kapcsolódási string-et
+
+### Kapcsolódási string használata
+
+A kapcsolódási string-et a `docker-compose.yml` fájlban kell beállítani:
+
+```yaml
+environment:
+  - MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority&appName=<appname>
+```
+
+Fontos: A MongoDB Atlas kapcsolódási string formátuma `mongodb+srv://` protokollt használ, nem pedig `mongodb://` protokollt. Ez a különbség fontos a sikeres kapcsolódáshoz.
 
 ## Fejlesztés
 
 ### Frontend Fejlesztés
 - A forrásfájlok a `frontend/src` könyvtárban találhatók
-- A változtatások automatikusan érvénybe lépnek
+- A változtatások automatikusan érvénybe lépnek az Angular fejlesztői szerveren
 - Új komponensek létrehozása:
   ```bash
-  sudo docker exec mean-stack ng generate component my-component
+  cd frontend
+  ng generate component my-component
   ```
 - Új service létrehozása:
   ```bash
-  sudo docker exec mean-stack ng generate service my-service
+  cd frontend
+  ng generate service my-service
   ```
 
 ### Backend Fejlesztés
 - A backend fájlok a `backend` könyvtárban találhatók
-- A változtatások automatikusan érvénybe lépnek
-- Az Express szerver újraindul a változtatások után
-
-## Docker Parancsok
-
-### Konténerek leállítása:
-```bash
-sudo docker-compose down
-```
-
-### Konténerek leállítása és adatok törlése:
-```bash
-sudo docker-compose down -v
-```
-
-### Logok megtekintése:
-```bash
-sudo docker-compose logs -f
-```
-
-## Megjegyzések
-
-- A Docker parancsokhoz sudo jogosultság szükséges Linux rendszereken
-- Ha nem szeretnéd használni a sudo-t, add hozzá a felhasználót a docker csoporthoz:
+- A változtatások a Docker kötet miatt automatikusan szinkronizálódnak a konténerrel
+- Az Express szerver újraindításához:
   ```bash
-  sudo usermod -aG docker $USER
-  # Jelentkezz ki és be a változtatások érvénybe lépéséhez
+  sudo docker restart mean-backend
+  ```
+- Seed adatok betöltése:
+  ```bash
+  sudo docker exec -it mean-backend node seed.js
+  ```
+
+## Tesztelés
+
+### Backend API tesztelése
+- Használhatod a Postman vagy Insomnia alkalmazásokat az API végpontok teszteléséhez
+- Példa kérés:
+  ```
+  GET http://localhost:3000/api/recipes
+  ```
+
+### Frontend tesztelése
+- Nyisd meg a böngészőben: http://localhost:4200
+- Jelentkezz be a következő felhasználóval:
+  - Email: admin@example.com
+  - Jelszó: admin123
+
+## Hibaelhárítás
+
+### MongoDB kapcsolódási problémák
+- Ellenőrizd, hogy a MongoDB Atlas kapcsolódási string helyes-e
+- Ellenőrizd, hogy a hálózati hozzáférés engedélyezve van-e a jelenlegi IP címről
+- Ellenőrizd a MongoDB Atlas dashboard-on a klaszter állapotát
+
+### Docker problémák
+- Ellenőrizd a Docker logokat:
+  ```bash
+  sudo docker-compose logs -f
+  ```
+- Újraindítás tiszta állapotból:
+  ```bash
+  sudo docker-compose down --remove-orphans -v && sudo docker-compose up --build
+  ```
+- Ha "orphan containers" hibát kapsz:
+  ```bash
+  sudo docker stop $(sudo docker ps -a -q)
+  sudo docker rm $(sudo docker ps -a -q)
+  ```
+
+### Frontend fejlesztési problémák
+- Jogosultsági problémák esetén:
+  ```bash
+  sudo chown -R $USER:$USER ./frontend
+  ```
+- Ha npm telepítési hibákat tapasztalsz:
+  ```bash
+  rm -rf frontend/node_modules
+  rm -f frontend/package-lock.json
+  cd frontend && npm install
+  ```
+- Angular CLI hibák esetén:
+  ```bash
+  npm install -g @angular/cli@17.0.0
+  ```
