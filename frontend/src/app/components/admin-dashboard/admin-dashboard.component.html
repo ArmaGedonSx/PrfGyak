@@ -32,7 +32,8 @@
                 <div *ngIf="!loadingUsers && !usersError && users.length === 0" class="empty-state">Nincsenek
                     felhasználók</div>
 
-                <table *ngIf="!loadingUsers && !usersError && users.length > 0" class="data-table">
+                <!-- Asztali nézet - táblázat -->
+                <table *ngIf="!loadingUsers && !usersError && users.length > 0" class="data-table desktop-only">
                     <thead>
                         <tr>
                             <th>Felhasználónév</th>
@@ -58,6 +59,29 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <!-- Mobil nézet - kártyák -->
+                <div *ngIf="!loadingUsers && !usersError && users.length > 0" class="mobile-cards mobile-only">
+                    <div *ngFor="let user of users" class="mobile-card">
+                        <div class="card-header">
+                            <h3>{{ user.username }}</h3>
+                            <span [class.admin-role]="user.role === 'admin'">
+                                {{ user.role === 'admin' ? 'Admin' : 'Felhasználó' }}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-field">
+                                <span class="field-label">Email:</span>
+                                <span class="field-value">{{ user.email }}</span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="role-toggle-btn" (click)="toggleUserRole(user)">
+                                {{ user.role === 'admin' ? 'Lefokozás' : 'Admin jogok' }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Receptek kezelése -->
@@ -68,7 +92,8 @@
                 <div *ngIf="!loadingRecipes && !recipesError && recipes.length === 0" class="empty-state">Nincsenek
                     receptek</div>
 
-                <table *ngIf="!loadingRecipes && !recipesError && recipes.length > 0" class="data-table">
+                <!-- Asztali nézet - táblázat -->
+                <table *ngIf="!loadingRecipes && !recipesError && recipes.length > 0" class="data-table desktop-only">
                     <thead>
                         <tr>
                             <th>Cím</th>
@@ -99,6 +124,42 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <!-- Mobil nézet - kártyák -->
+                <div *ngIf="!loadingRecipes && !recipesError && recipes.length > 0" class="mobile-cards mobile-only">
+                    <div *ngFor="let recipe of recipes" class="mobile-card">
+                        <div class="card-header">
+                            <h3>{{ recipe.title }}</h3>
+                            <div class="recipe-rating">{{ recipe.averageRating | number:'1.1-1' }} / 5</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-field">
+                                <span class="field-label">Szerző:</span>
+                                <span class="field-value">{{ recipe.author.username }}</span>
+                            </div>
+                            <div class="card-field">
+                                <span class="field-label">Elkészítési idő:</span>
+                                <span class="field-value">{{ recipe.prepTime + recipe.cookTime }} perc</span>
+                            </div>
+                            <div class="card-field">
+                                <span class="field-label">Nehézség:</span>
+                                <span class="field-value">{{ recipe.difficulty }}</span>
+                            </div>
+                            <div class="card-field">
+                                <span class="field-label">Kategóriák:</span>
+                                <span class="field-value">
+                                    <span *ngFor="let category of recipe.categories; let last = last">
+                                        {{ category }}{{ !last ? ', ' : '' }}
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn" (click)="editRecipe(recipe._id)">Szerkesztés</button>
+                            <button class="delete-btn" (click)="deleteRecipe(recipe._id)">Törlés</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Hozzávalók kezelése -->
@@ -116,7 +177,9 @@
                 <div *ngIf="!loadingIngredients && !ingredientsError && ingredients.length === 0" class="empty-state">
                     Nincsenek hozzávalók</div>
 
-                <table *ngIf="!loadingIngredients && !ingredientsError && ingredients.length > 0" class="data-table">
+                <!-- Asztali nézet - táblázat -->
+                <table *ngIf="!loadingIngredients && !ingredientsError && ingredients.length > 0"
+                    class="data-table desktop-only">
                     <thead>
                         <tr>
                             <th>Név</th>
@@ -149,6 +212,47 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <!-- Mobil nézet - kártyák -->
+                <div *ngIf="!loadingIngredients && !ingredientsError && ingredients.length > 0"
+                    class="mobile-cards mobile-only">
+                    <div *ngFor="let ingredient of ingredients" class="mobile-card">
+                        <div class="card-header">
+                            <h3>{{ ingredient.name }}</h3>
+                            <span class="ingredient-category">{{ getCategoryTranslation(ingredient.category) }}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-field">
+                                <span class="field-label">Kalória:</span>
+                                <span class="field-value">{{ ingredient.nutritionalInfo.calories || 0 }} kcal</span>
+                            </div>
+                            <div class="card-field">
+                                <span class="field-label">Fehérje:</span>
+                                <span class="field-value">{{ ingredient.nutritionalInfo.protein || 0 }} g</span>
+                            </div>
+                            <div class="card-field">
+                                <span class="field-label">Szénhidrát:</span>
+                                <span class="field-value">{{ ingredient.nutritionalInfo.carbs || 0 }} g</span>
+                            </div>
+                            <div class="card-field">
+                                <span class="field-label">Zsír:</span>
+                                <span class="field-value">{{ ingredient.nutritionalInfo.fat || 0 }} g</span>
+                            </div>
+                            <div class="card-field">
+                                <span class="field-label">Mértékegységek:</span>
+                                <span class="field-value">
+                                    <span *ngFor="let unit of ingredient.commonUnits; let last = last">
+                                        {{ unit }}{{ !last ? ', ' : '' }}
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn" (click)="editIngredient(ingredient._id)">Szerkesztés</button>
+                            <button class="delete-btn" (click)="deleteIngredient(ingredient._id)">Törlés</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

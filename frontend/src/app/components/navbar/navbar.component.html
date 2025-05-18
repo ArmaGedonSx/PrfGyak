@@ -1,23 +1,29 @@
 <nav class="navbar">
     <div class="navbar-brand">
-        <a routerLink="/">Receptgyűjtemény</a>
+        <a routerLink="/" (click)="closeMenu()">Receptgyűjtemény</a>
     </div>
 
-    <div class="navbar-menu">
+    <button class="hamburger-btn" (click)="toggleMenu()" [class.active]="isMenuOpen">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+    </button>
+
+    <div class="navbar-menu" [class.open]="isMenuOpen">
         <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
-            <a routerLink="/login" class="nav-link">Bejelentkezés</a>
-            <a routerLink="/register" class="nav-link">Regisztráció</a>
+            <a routerLink="/login" class="nav-link" (click)="closeMenu()">Bejelentkezés</a>
+            <a routerLink="/register" class="nav-link" (click)="closeMenu()">Regisztráció</a>
         </ng-container>
 
         <ng-template #loggedIn>
-            <a routerLink="/home" class="nav-link">Főoldal</a>
-            <a routerLink="/recipes" class="nav-link">Receptek</a>
-            <a routerLink="/ingredients" class="nav-link">Hozzávalók</a>
-            <a *ngIf="(authService.user$ | async)?.role === 'admin'" routerLink="/admin"
-                class="nav-link admin-link">Admin</a>
+            <a routerLink="/home" class="nav-link" (click)="closeMenu()">Főoldal</a>
+            <a routerLink="/recipes" class="nav-link" (click)="closeMenu()">Receptek</a>
+            <a routerLink="/ingredients" class="nav-link" (click)="closeMenu()">Hozzávalók</a>
+            <a *ngIf="(authService.user$ | async)?.role === 'admin'" routerLink="/admin" class="nav-link admin-link"
+                (click)="closeMenu()">Admin</a>
             <div class="user-info">
                 <span *ngIf="(authService.user$ | async) as user">
-                    <a routerLink="/profile/edit" class="profile-link">
+                    <a routerLink="/profile/edit" class="profile-link" (click)="closeMenu()">
                         {{ user.username }}
                         <span *ngIf="user.role === 'admin'" class="admin-badge">Admin</span>
                     </a>
@@ -26,4 +32,6 @@
             </div>
         </ng-template>
     </div>
+
+    <div class="overlay" *ngIf="isMenuOpen" (click)="closeMenu()"></div>
 </nav>
