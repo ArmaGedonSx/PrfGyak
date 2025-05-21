@@ -50,7 +50,7 @@ const users = [
 
 const ingredients = [
     {
-        name: 'Chicken Breast',
+        name: 'Csirkemell',
         category: 'protein',
         nutritionalInfo: {
             calories: 165,
@@ -60,13 +60,13 @@ const ingredients = [
             fiber: 0,
             sugar: 0
         },
-        commonUnits: ['g', 'oz', 'piece'],
+        commonUnits: ['g', 'dkg', 'db'],
         image: 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y2hpY2tlbiUyMGJyZWFzdHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60',
         allergens: ['none'],
-        description: 'Lean, boneless chicken breast meat'
+        description: 'Sovány, csont nélküli csirkemell hús'
     },
     {
-        name: 'Rice',
+        name: 'Rizs',
         category: 'grains',
         nutritionalInfo: {
             calories: 130,
@@ -76,13 +76,13 @@ const ingredients = [
             fiber: 0.4,
             sugar: 0.1
         },
-        commonUnits: ['g', 'cup'],
+        commonUnits: ['g', 'csésze'],
         image: 'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cmljZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60',
         allergens: ['none'],
-        description: 'White, long-grain rice'
+        description: 'Fehér, hosszú szemű rizs'
     },
     {
-        name: 'Broccoli',
+        name: 'Brokkoli',
         category: 'vegetables',
         nutritionalInfo: {
             calories: 34,
@@ -92,13 +92,13 @@ const ingredients = [
             fiber: 2.6,
             sugar: 1.7
         },
-        commonUnits: ['g', 'cup', 'piece'],
+        commonUnits: ['g', 'csésze', 'db'],
         image: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YnJvY2NvbGl8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60',
         allergens: ['none'],
-        description: 'Fresh green broccoli florets'
+        description: 'Friss zöld brokkoli rózsák'
     },
     {
-        name: 'Olive Oil',
+        name: 'Olívaolaj',
         category: 'oils_fats',
         nutritionalInfo: {
             calories: 884,
@@ -108,13 +108,13 @@ const ingredients = [
             fiber: 0,
             sugar: 0
         },
-        commonUnits: ['ml', 'tbsp', 'tsp'],
+        commonUnits: ['ml', 'evőkanál', 'teáskanál'],
         image: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b2xpdmUlMjBvaWx8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60',
         allergens: ['none'],
-        description: 'Extra virgin olive oil'
+        description: 'Extra szűz olívaolaj'
     },
     {
-        name: 'Garlic',
+        name: 'Fokhagyma',
         category: 'herbs_spices',
         nutritionalInfo: {
             calories: 149,
@@ -124,13 +124,13 @@ const ingredients = [
             fiber: 2.1,
             sugar: 1
         },
-        commonUnits: ['g', 'clove'],
+        commonUnits: ['g', 'gerezd'],
         image: 'https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Z2FybGljfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
         allergens: ['none'],
-        description: 'Fresh garlic cloves'
+        description: 'Friss fokhagyma gerezdek'
     },
     {
-        name: 'Lemon',
+        name: 'Citrom',
         category: 'fruits',
         nutritionalInfo: {
             calories: 29,
@@ -140,13 +140,13 @@ const ingredients = [
             fiber: 2.8,
             sugar: 2.5
         },
-        commonUnits: ['g', 'piece', 'tbsp'],
+        commonUnits: ['g', 'db', 'evőkanál'],
         image: 'https://images.unsplash.com/photo-1582476473562-b25216f94c5e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGVtb258ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60',
         allergens: ['none'],
-        description: 'Fresh yellow lemon'
+        description: 'Friss sárga citrom'
     },
     {
-        name: 'Salt',
+        name: 'Só',
         category: 'herbs_spices',
         nutritionalInfo: {
             calories: 0,
@@ -156,13 +156,13 @@ const ingredients = [
             fiber: 0,
             sugar: 0
         },
-        commonUnits: ['g', 'tsp', 'pinch'],
+        commonUnits: ['g', 'teáskanál', 'csipet'],
         image: 'https://images.unsplash.com/photo-1518110925495-b37e912bdf5e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2FsdHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60',
         allergens: ['none'],
-        description: 'Table salt'
+        description: 'Asztali só'
     },
     {
-        name: 'Black Pepper',
+        name: 'Fekete bors',
         category: 'herbs_spices',
         nutritionalInfo: {
             calories: 251,
@@ -172,10 +172,10 @@ const ingredients = [
             fiber: 25.3,
             sugar: 0.6
         },
-        commonUnits: ['g', 'tsp', 'pinch'],
+        commonUnits: ['g', 'teáskanál', 'csipet'],
         image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YmxhY2slMjBwZXBwZXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60',
         allergens: ['none'],
-        description: 'Ground black pepper'
+        description: 'Őrölt fekete bors'
     },
     {
         name: 'Tofu',
@@ -188,10 +188,10 @@ const ingredients = [
             fiber: 0.3,
             sugar: 0.5
         },
-        commonUnits: ['g', 'block'],
+        commonUnits: ['g', 'tömb'],
         image: 'https://images.unsplash.com/photo-1584321094050-6f5e8006a95d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dG9mdXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60',
         allergens: ['soy'],
-        description: 'Firm tofu'
+        description: 'Kemény tofu'
     },
     {
         name: 'Quinoa',
@@ -204,10 +204,10 @@ const ingredients = [
             fiber: 2.8,
             sugar: 0.9
         },
-        commonUnits: ['g', 'cup'],
+        commonUnits: ['g', 'csésze'],
         image: 'https://images.unsplash.com/photo-1586201375761-83865001e8ac?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cXVpbm9hfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
         allergens: ['none'],
-        description: 'White quinoa seeds'
+        description: 'Fehér quinoa magok'
     }
 ];
 
@@ -247,8 +247,8 @@ async function seedDatabase() {
         // Create recipes
         const recipes = [
             {
-                title: 'Lemon Garlic Chicken with Broccoli',
-                description: 'A healthy and flavorful dish with tender chicken, fresh broccoli, and a zesty lemon garlic sauce.',
+                title: 'Citromos fokhagymás csirke brokkolival',
+                description: 'Egy egészséges és ízletes étel omlós csirkével, friss brokkolival és pikáns citromos fokhagymás szósszal.',
                 author: createdUsers[0]._id,
                 prepTime: 15,
                 cookTime: 25,
@@ -256,61 +256,61 @@ async function seedDatabase() {
                 difficulty: 'medium',
                 ingredientQuantities: [
                     {
-                        ingredientId: createdIngredients.find(i => i.name === 'Chicken Breast')._id,
+                        ingredientId: createdIngredients.find(i => i.name === 'Csirkemell')._id,
                         quantity: 500,
                         unit: 'g'
                     },
                     {
-                        ingredientId: createdIngredients.find(i => i.name === 'Broccoli')._id,
+                        ingredientId: createdIngredients.find(i => i.name === 'Brokkoli')._id,
                         quantity: 300,
                         unit: 'g'
                     },
                     {
-                        ingredientId: createdIngredients.find(i => i.name === 'Olive Oil')._id,
+                        ingredientId: createdIngredients.find(i => i.name === 'Olívaolaj')._id,
                         quantity: 2,
-                        unit: 'tbsp'
+                        unit: 'evőkanál'
                     },
                     {
-                        ingredientId: createdIngredients.find(i => i.name === 'Garlic')._id,
+                        ingredientId: createdIngredients.find(i => i.name === 'Fokhagyma')._id,
                         quantity: 3,
-                        unit: 'clove'
+                        unit: 'gerezd'
                     },
                     {
-                        ingredientId: createdIngredients.find(i => i.name === 'Lemon')._id,
+                        ingredientId: createdIngredients.find(i => i.name === 'Citrom')._id,
                         quantity: 1,
-                        unit: 'piece'
+                        unit: 'db'
                     },
                     {
-                        ingredientId: createdIngredients.find(i => i.name === 'Salt')._id,
+                        ingredientId: createdIngredients.find(i => i.name === 'Só')._id,
                         quantity: 1,
-                        unit: 'tsp'
+                        unit: 'teáskanál'
                     },
                     {
-                        ingredientId: createdIngredients.find(i => i.name === 'Black Pepper')._id,
+                        ingredientId: createdIngredients.find(i => i.name === 'Fekete bors')._id,
                         quantity: 0.5,
-                        unit: 'tsp'
+                        unit: 'teáskanál'
                     }
                 ],
                 steps: [
-                    'Cut the chicken breast into bite-sized pieces.',
-                    'Mince the garlic and cut the broccoli into florets.',
-                    'Heat olive oil in a large skillet over medium-high heat.',
-                    'Add the chicken and cook until golden brown, about 5-7 minutes.',
-                    'Add the garlic and cook for 30 seconds until fragrant.',
-                    'Add the broccoli and cook for 5 minutes until tender-crisp.',
-                    'Squeeze the lemon juice over the chicken and broccoli.',
-                    'Season with salt and pepper to taste.',
-                    'Serve hot with rice or your favorite side dish.'
+                    'Vágja a csirkemellet falat méretű darabokra.',
+                    'Aprítsa fel a fokhagymát és vágja a brokkolit rózsákra.',
+                    'Melegítsen olívaolajat egy nagy serpenyőben közepes-magas hőfokon.',
+                    'Adja hozzá a csirkét és süsse aranybarnára, körülbelül 5-7 percig.',
+                    'Adja hozzá a fokhagymát és süsse 30 másodpercig, amíg illatos nem lesz.',
+                    'Adja hozzá a brokkolit és süsse 5 percig, amíg ropogós-puha nem lesz.',
+                    'Facsarja a citrom levét a csirkére és a brokkolira.',
+                    'Ízesítse sóval és borssal ízlés szerint.',
+                    'Tálalja melegen rizzsel vagy kedvenc köretével.'
                 ],
-                categories: ['main dish', 'high-protein'],
-                tags: ['chicken', 'healthy', 'quick'],
+                categories: ['főétel', 'magas fehérjetartalmú'],
+                tags: ['csirke', 'egészséges', 'gyors'],
                 images: [
                     'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Y2hpY2tlbiUyMGFuZCUyMGJyb2Njb2xpfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'
                 ]
             },
             {
-                title: 'Quinoa and Tofu Bowl',
-                description: 'A nutritious vegan bowl with quinoa, tofu, and vegetables.',
+                title: 'Quinoa és tofu tál',
+                description: 'Egy tápláló vegán tál quinoával, tofuval és zöldségekkel.',
                 author: createdUsers[2]._id,
                 prepTime: 10,
                 cookTime: 20,
@@ -328,50 +328,50 @@ async function seedDatabase() {
                         unit: 'g'
                     },
                     {
-                        ingredientId: createdIngredients.find(i => i.name === 'Broccoli')._id,
+                        ingredientId: createdIngredients.find(i => i.name === 'Brokkoli')._id,
                         quantity: 150,
                         unit: 'g'
                     },
                     {
-                        ingredientId: createdIngredients.find(i => i.name === 'Olive Oil')._id,
+                        ingredientId: createdIngredients.find(i => i.name === 'Olívaolaj')._id,
                         quantity: 1,
-                        unit: 'tbsp'
+                        unit: 'evőkanál'
                     },
                     {
-                        ingredientId: createdIngredients.find(i => i.name === 'Garlic')._id,
+                        ingredientId: createdIngredients.find(i => i.name === 'Fokhagyma')._id,
                         quantity: 2,
-                        unit: 'clove'
+                        unit: 'gerezd'
                     },
                     {
-                        ingredientId: createdIngredients.find(i => i.name === 'Lemon')._id,
+                        ingredientId: createdIngredients.find(i => i.name === 'Citrom')._id,
                         quantity: 0.5,
-                        unit: 'piece'
+                        unit: 'db'
                     },
                     {
-                        ingredientId: createdIngredients.find(i => i.name === 'Salt')._id,
+                        ingredientId: createdIngredients.find(i => i.name === 'Só')._id,
                         quantity: 0.5,
-                        unit: 'tsp'
+                        unit: 'teáskanál'
                     },
                     {
-                        ingredientId: createdIngredients.find(i => i.name === 'Black Pepper')._id,
+                        ingredientId: createdIngredients.find(i => i.name === 'Fekete bors')._id,
                         quantity: 0.25,
-                        unit: 'tsp'
+                        unit: 'teáskanál'
                     }
                 ],
                 steps: [
-                    'Rinse the quinoa under cold water.',
-                    'Cook the quinoa according to package instructions.',
-                    'Cut the tofu into cubes and the broccoli into florets.',
-                    'Heat olive oil in a pan over medium heat.',
-                    'Add the tofu and cook until golden brown, about 5 minutes.',
-                    'Add the garlic and cook for 30 seconds until fragrant.',
-                    'Add the broccoli and cook for 5 minutes until tender-crisp.',
-                    'Squeeze the lemon juice over the tofu and broccoli.',
-                    'Season with salt and pepper to taste.',
-                    'Serve the tofu and broccoli over the cooked quinoa.'
+                    'Öblítse le a quinoát hideg vízzel.',
+                    'Főzze meg a quinoát a csomagoláson található utasítások szerint.',
+                    'Vágja kockákra a tofut és rózsákra a brokkolit.',
+                    'Melegítsen olívaolajat egy serpenyőben közepes hőfokon.',
+                    'Adja hozzá a tofut és süsse aranybarnára, körülbelül 5 percig.',
+                    'Adja hozzá a fokhagymát és süsse 30 másodpercig, amíg illatos nem lesz.',
+                    'Adja hozzá a brokkolit és süsse 5 percig, amíg ropogós-puha nem lesz.',
+                    'Facsarja a citrom levét a tofura és a brokkolira.',
+                    'Ízesítse sóval és borssal ízlés szerint.',
+                    'Tálalja a tofut és a brokkolit a főtt quinoa tetején.'
                 ],
-                categories: ['main dish', 'vegan'],
-                tags: ['tofu', 'quinoa', 'healthy', 'vegan'],
+                categories: ['főétel', 'vegán'],
+                tags: ['tofu', 'quinoa', 'egészséges', 'vegán'],
                 images: [
                     'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dmVnYW4lMjBib3dsfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'
                 ]
@@ -393,7 +393,7 @@ async function seedDatabase() {
 
         const mealPlans = [
             {
-                name: 'Weekly Meal Plan',
+                name: 'Heti étkezési terv',
                 user: createdUsers[0]._id,
                 startDate: today,
                 endDate: nextWeek,
@@ -417,7 +417,7 @@ async function seedDatabase() {
                         servings: 2
                     }
                 ],
-                notes: 'Simple meal plan for the week',
+                notes: 'Egyszerű étkezési terv a hétre',
                 isPublic: true
             }
         ];
