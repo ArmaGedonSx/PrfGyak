@@ -13,8 +13,7 @@ COPY frontend/ .
 
 # Környezeti változó beállítása build-time-ban
 # Ez felülírja az environment.ts-t production build során
-ARG API_URL=/api
-RUN sed -i "s|http://localhost:3000|${API_URL}|g" src/environments/environment.ts
+RUN echo 'export const environment = { production: true, apiUrl: "/api" };' > src/environments/environment.ts
 
 # Angular Buildelése Production módba
 # FONTOS: Ez létrehozza a dist mappát
