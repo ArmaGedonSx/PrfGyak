@@ -30,18 +30,16 @@ resource "render_web_service" "mean_app" {
   plan = "free"
   region = "frankfurt"
   
-  runtime_source {
-    docker {
-      repo_url = "https://github.com/ArmaGedonSx/PrfGyak.git"
-      branch   = "main"
-      auto_deploy = false # Jenkins fogja indítani
-    }
+  runtime_source = {
+    type = "docker"
+    repo = "https://github.com/ArmaGedonSx/PrfGyak.git"
+    branch = "main"
+    auto_deploy = "no"
   }
 
   env_vars = {
-    "NODE_VERSION" = { value = "20" }
-    "MONGO_URI"    = { value = "placeholder_value_change_in_dashboard" } 
-    # Biztonsági okból a valódi Mongo jelszót a Dashboardon írd át kézzel deploy után!
+    NODE_VERSION = "20"
+    MONGO_URI = "placeholder_value_change_in_dashboard"
   }
 }
 
