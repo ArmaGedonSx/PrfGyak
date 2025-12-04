@@ -1,17 +1,13 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  backend:
+  mean-app: # Átneveztem, mert ebben már benne van a Frontend és a Backend is
     build: .
-    container_name: mean-backend
+    container_name: mean-production-test
     restart: always
     ports:
-      - "3000:3000"  # Express
-    volumes:
-      - ./backend:/app
-      - backend_node_modules:/app/node_modules
+      - "3000:3000"
     environment:
-      - MONGO_URI=mongodb+srv://ArmaGedonS:Arma123456@cluster0.kpgav.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-
-volumes:
-  backend_node_modules:
+      # A jelszót inkább .env fájlból húzzuk be (lásd lentebb)
+      - MONGO_URI=${MONGO_URI}
+      - NODE_ENV=production

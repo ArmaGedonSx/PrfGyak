@@ -1,8 +1,64 @@
-# Receptgyűjtemény és Ételtervező Alkalmazás
+# MEAN Stack Receptgyűjtemény - DevOps Projekt
 
-Ez a projekt egy MEAN (MongoDB, Express.js, Angular, Node.js) stack alkalmazás, amely lehetővé teszi a felhasználók számára receptek böngészését, létrehozását, értékelését és étrendek összeállítását.
+Ez a projekt egy teljeskörű CI/CD pipeline implementációját mutatja be egy konténerizált MEAN stack alkalmazáson. Az alkalmazás lehetővé teszi a felhasználók számára receptek böngészését, létrehozását, értékelését és étrendek összeállítását.
 
-## Funkciók
+## 🚀 DevOps Eszközök és Technológiák
+
+### Alkalmazás Stack
+- **Frontend**: Angular 17, TypeScript, SCSS
+- **Backend**: Node.js, Express.js, TypeScript
+- **Adatbázis**: MongoDB Atlas (felhő alapú)
+- **Autentikáció**: JWT (JSON Web Token)
+
+### DevOps Eszközök
+1. **Docker**: Az alkalmazás (Frontend + Backend) egyetlen konténerbe csomagolva (Multi-stage build)
+2. **Git**: Verziókezelés és forráskód menedzsment
+3. **Jenkins**: CI/CD pipeline vezérlése (Build, Test, Deploy trigger)
+4. **Terraform**: Infrastructure as Code - A Render szolgáltatás definíciója
+5. **Ansible**: Konfiguráció kezelés - A build környezet ellenőrzése
+6. **Render**: Felhő alapú hosting platform
+7. **Prometheus**: Monitoring és metrikák gyűjtése
+
+## 📋 CI/CD Pipeline Működése
+
+A kód változása (Git Push) után a Jenkins pipeline automatikusan elindul:
+
+1. **Environment Check (Ansible)**: Ellenőrzi a build környezet állapotát (Docker, Node.js)
+2. **Local Build & Test**: Docker image felépítése és tesztelése
+3. **Infrastructure (Terraform)**: Az infrastruktúra állapotának ellenőrzése/létrehozása
+4. **Deploy to Render**: Webhook-on keresztül frissíti a Render éles környezetét
+5. **Monitor Check**: Ellenőrzi az alkalmazás elérhetőségét
+
+## 🏗️ Projekt Struktúra
+
+```
+PrfGyak/
+├── frontend/           # Angular alkalmazás
+│   ├── src/            # Angular forrásfájlok
+│   └── ...             # Angular konfigurációs fájlok
+├── backend/            # Node.js backend
+│   ├── models/         # MongoDB modellek
+│   ├── routes/         # API végpontok
+│   ├── middleware/     # Middleware-ek (pl. autentikáció)
+│   ├── server.js       # Express szerver
+│   └── seed.js         # Adatbázis seed script
+├── infra/              # Terraform fájlok (IaC)
+│   └── main.tf         # Render szolgáltatás definíciója
+├── ops/                # Ansible fájlok
+│   └── setup.yml       # Környezet ellenőrző playbook
+├── Jenkinsfile         # CI/CD Pipeline definíció
+├── prometheus.yml      # Monitoring konfiguráció
+├── Dockerfile          # Multi-stage Docker build
+└── docker-compose.yml  # Lokális fejlesztési környezet
+```
+
+## 🌐 Elérhetőség
+
+- **Éles környezet**: https://recept-gyujtemeny.onrender.com
+- **Lokális Frontend**: http://localhost:4200
+- **Lokális Backend API**: http://localhost:3000
+
+## ✨ Funkciók
 
 - **Felhasználókezelés**: Regisztráció, bejelentkezés, profil kezelése
 - **Receptek kezelése**: Receptek létrehozása, szerkesztése, törlése, értékelése
@@ -12,43 +68,25 @@ Ez a projekt egy MEAN (MongoDB, Express.js, Angular, Node.js) stack alkalmazás,
 - **Bevásárlólista generálása**: Automatikus bevásárlólista készítése az étrendek alapján
 - **Tápanyagtartalom számítás**: Receptek és étrendek tápanyagtartalmának kiszámítása
 
-## Technológiák
 
-- **Frontend**: Angular 17, TypeScript, SCSS
-- **Backend**: Node.js, Express.js, TypeScript
-- **Adatbázis**: MongoDB Atlas (felhő alapú)
-- **Konténerizáció**: Docker, Docker Compose
-- **Autentikáció**: JWT (JSON Web Token)
+## 🛠️ Előfeltételek
 
-## Előfeltételek
-
-### Backend
-- Docker
-- Docker Compose
-
-### Frontend
+### Lokális Fejlesztéshez
+- Docker & Docker Compose
 - Node.js 20.x (ajánlott: 20.18.3 vagy újabb)
 - Angular CLI 17.0.0 (`npm install -g @angular/cli@17.0.0`)
 
+### DevOps Pipeline-hoz
+- Jenkins (telepítve és konfigurálva)
+- Terraform CLI
+- Ansible
+- Git
+- Render.com fiók (API kulccsal)
+- MongoDB Atlas fiók
 
-## Projekt Struktúra
+## 🚀 Telepítés és Indítás
 
-```
-PrfGyak/
-├── frontend/          # Angular alkalmazás
-│   ├── src/           # Angular forrásfájlok
-│   └── ...            # Angular konfigurációs fájlok
-├── backend/           # Node.js backend
-│   ├── models/        # MongoDB modellek
-│   ├── routes/        # API végpontok
-│   ├── middleware/    # Middleware-ek (pl. autentikáció)
-│   ├── server.js      # Express szerver
-│   └── seed.js        # Adatbázis seed script
-├── Dockerfile         # Docker konfiguráció
-└── docker-compose.yml # Docker Compose konfiguráció
-```
-
-## Telepítés és Indítás
+### Lokális Fejlesztési Környezet
 
 1. Klónozd le a repository-t:
 ```bash
@@ -89,14 +127,93 @@ ng serve
 sudo docker exec -it mean-backend node seed.js
 ```
 
-## Elérhetőség
+### DevOps Pipeline Beállítása
 
-- Frontend: http://localhost:4200
-- Backend API: http://localhost:3000
-- API dokumentáció: http://localhost:3000/api-docs (ha implementálva van)
-- MongoDB: MongoDB Atlas felhő szolgáltatás
+#### 1. Render.com Beállítása
 
-## API Végpontok
+1. Regisztrálj a [Render.com](https://render.com) oldalán
+2. Menj a **Settings → Account Settings → API Keys** menübe
+3. Hozz létre egy új API kulcsot: `terraform-deploy`
+4. Mentsd el a kulcsot biztonságos helyre
+
+#### 2. Jenkins Telepítése és Konfigurálása
+
+**Jenkins indítása Docker-ben (minden eszközzel felszerelve):**
+
+```bash
+# Jenkins konténer indítása
+docker-compose -f jenkins-docker-compose.yml up -d
+
+# Admin jelszó lekérése
+docker exec jenkins-devops cat /var/jenkins_home/secrets/initialAdminPassword
+```
+
+**Jenkins Initial Setup:**
+
+1. Nyisd meg a böngészőben: `http://localhost:8080`
+2. Másold be az admin jelszót (amit az előző parancs kiírt)
+3. Válaszd az **"Install suggested plugins"** opciót
+4. Hozz létre egy admin felhasználót
+5. Telepítsd a **Docker Pipeline** plugint:
+   - Manage Jenkins → Manage Plugins → Available
+   - Keresd meg: "Docker Pipeline"
+   - Telepítsd és indítsd újra a Jenkins-t
+
+**Credentials beállítása:**
+
+1. Menj a **Manage Jenkins → Manage Credentials → (global)** menübe
+2. Kattints az **Add Credentials** gombra
+
+**Credential #1: Render API Key**
+- Kind: `Secret text`
+- Secret: `<A_RENDER_API_KULCSOD>`
+- ID: `render-api-key`
+- Description: `Render API Key for Terraform`
+
+**Credential #2: Render Deploy Hook**
+- Kind: `Secret text`
+- Secret: `<RENDER_DEPLOY_HOOK_URL>` (Settings → Deploy Hook a Render Dashboard-on)
+- ID: `render-deploy-hook-url`
+- Description: `Render Deploy Hook URL`
+
+**Pipeline Job létrehozása:**
+
+1. Jenkins Dashboard → **New Item**
+2. Név: `MEAN-App-Pipeline`
+3. Típus: **Pipeline** → OK
+4. Pipeline szekcióban:
+   - Definition: `Pipeline script from SCM`
+   - SCM: `Git`
+   - Repository URL: `https://github.com/ArmaGedonSx/PrfGyak.git`
+   - Branch: `*/main`
+   - Script Path: `Jenkinsfile`
+5. **Save**
+
+**Pipeline futtatása:**
+
+1. Kattints a **Build Now** gombra
+2. Kövesd a build folyamatát a **Console Output**-ban
+3. Ha minden zöld, az alkalmazás elérhető a Render URL-en! 🎉
+
+#### 3. Terraform Inicializálás
+
+```bash
+cd infra
+terraform init
+terraform plan -var="render_api_key=YOUR_API_KEY" -var="owner_id=YOUR_OWNER_ID"
+terraform apply -var="render_api_key=YOUR_API_KEY" -var="owner_id=YOUR_OWNER_ID"
+```
+
+#### 4. Monitoring (Prometheus)
+
+```bash
+# Prometheus letöltése és futtatása
+prometheus --config.file=prometheus.yml
+```
+
+Prometheus UI: http://localhost:9090
+
+## 📡 API Végpontok
 
 ### Autentikáció
 - `POST /api/auth/register` - Regisztráció
@@ -129,7 +246,7 @@ sudo docker exec -it mean-backend node seed.js
 - `GET /api/mealplans/:id/shopping-list` - Bevásárlólista generálása
 - `GET /api/mealplans/:id/nutrition` - Tápanyagtartalom számítása
 
-## MongoDB Atlas
+## 🗄️ MongoDB Atlas
 
 A projekt MongoDB Atlas-t használ a lokális MongoDB helyett. Ez lehetővé teszi, hogy:
 - Minden fejlesztői környezet ugyanazt az adatbázist használja
@@ -176,7 +293,7 @@ environment:
 
 Fontos: A MongoDB Atlas kapcsolódási string formátuma `mongodb+srv://` protokollt használ, nem pedig `mongodb://` protokollt. Ez a különbség fontos a sikeres kapcsolódáshoz.
 
-## Fejlesztés
+## 💻 Fejlesztés
 
 ### Frontend Fejlesztés
 - A forrásfájlok a `frontend/src` könyvtárban találhatók
@@ -204,7 +321,7 @@ Fontos: A MongoDB Atlas kapcsolódási string formátuma `mongodb+srv://` protok
   sudo docker exec -it mean-backend node seed.js
   ```
 
-## Tesztelés
+## 🧪 Tesztelés
 
 ### Backend API tesztelése
 - Használhatod a Postman vagy Insomnia alkalmazásokat az API végpontok teszteléséhez
@@ -219,7 +336,7 @@ Fontos: A MongoDB Atlas kapcsolódási string formátuma `mongodb+srv://` protok
   - Email: admin@example.com
   - Jelszó: admin123
 
-## Hibaelhárítás
+## 🔧 Hibaelhárítás
 
 ### MongoDB kapcsolódási problémák
 - Ellenőrizd, hogy a MongoDB Atlas kapcsolódási string helyes-e

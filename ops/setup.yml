@@ -1,0 +1,17 @@
+---
+- name: Prepare CI/CD Environment
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Check if Docker is installed
+      command: docker --version
+      register: docker_check
+      ignore_errors: yes
+
+    - name: Verify Node.js presence for testing
+      command: node --version
+      register: node_check
+
+    - name: Display Environment Info
+      debug:
+        msg: "Docker version: {{ docker_check.stdout }}, Node version: {{ node_check.stdout }}"

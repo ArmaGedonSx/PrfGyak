@@ -17,7 +17,7 @@ const {
 } = require('./routes');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Render miatt fontos a process.env.PORT!
 
 // Middleware
 app.use(cors());
@@ -28,18 +28,17 @@ app.use(express.urlencoded({ extended: true }));
 const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/meandb';
 
 // Kapcsolódási string ellenőrzése (jelszó elrejtésével)
-console.log('MongoDB URI:', mongoURI.replace(/mongodb(\+srv)?:\/\/([^:]+):([^@]+)@/, 'mongodb$1://***:***@'));
+if (mongoURI) {
+    console.log('MongoDB URI configured:', mongoURI.replace(/mongodb(\+srv)?:\/\/([^:]+):([^@]+)@/, 'mongodb$1://***:***@'));
+}
 
-// MongoDB Atlas ajánlott kapcsolódási opciók a hivatalos példa alapján
 const mongooseOptions = {
     serverApi: {
-        version: '1', // ServerApiVersion.v1 megfelelője
-        strict: false, // Changed from true to false to allow commands not in API Version 1
+        version: '1',
+        strict: false,
         deprecationErrors: true,
     },
-    // Adatbázis név explicit megadása
     dbName: 'meandb',
-    // Időtúllépési beállítások
     serverSelectionTimeoutMS: 30000,
     connectTimeoutMS: 30000,
     socketTimeoutMS: 30000
@@ -49,7 +48,6 @@ const mongooseOptions = {
 mongoose.connect(mongoURI, mongooseOptions)
     .then(() => {
         console.log('MongoDB Connected');
-        // Ping küldése a sikeres kapcsolat ellenőrzéséhez
         return mongoose.connection.db.admin().command({ ping: 1 });
     })
     .then(() => console.log("Pinged your deployment. You successfully connected to MongoDB!"))
@@ -62,25 +60,16 @@ app.use('/api/ingredients', ingredientRoutes);
 app.use('/api/mealplans', mealPlanRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Kategóriák lekérdezése külön útvonalon
+// Kategóriák lekérdezése
 app.get('/api/recipe-categories', async (req, res) => {
     try {
         const { Recipe } = require('./models/index');
-
-        // Using aggregation pipeline instead of distinct
         const result = await Recipe.aggregate([
-            // Unwind the categories array to get individual categories
             { $unwind: "$categories" },
-            // Group by category to get unique values
             { $group: { _id: "$categories" } },
-            // Sort alphabetically
             { $sort: { _id: 1 } }
         ]);
-
-        // Extract category names from the result
         const categories = result.map(item => item._id);
-
-        console.log('Categories fetched:', categories);
         res.json(categories);
     } catch (error) {
         console.error('Error fetching categories:', error);
@@ -88,19 +77,25 @@ app.get('/api/recipe-categories', async (req, res) => {
     }
 });
 
-// Test Route
 app.get('/api/test', (req, res) => {
     res.json({ message: 'Backend is working!' });
 });
 
-// Serve static files from the Angular app in production
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../frontend/dist')));
+// ---------------------------------------------------------
+// FRONTEND KISZOLGÁLÁSA (MÓDOSÍTVA A DOCKERHEZ)
+// ---------------------------------------------------------
 
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
-    });
-}
+// Mindig kiszolgáljuk a static fájlokat, ha léteznek (nem csak productionben)
+// A Dockerfile a "./public" mappába másolja az Angular buildet
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Minden egyéb kérésre (ami nem API), visszaadjuk az index.html-t
+// Ez biztosítja, hogy az Angular Routing működjön
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// ---------------------------------------------------------
 
 // Error handling middleware
 app.use((err, req, res, next) => {

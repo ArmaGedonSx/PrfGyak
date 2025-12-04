@@ -1,16 +1,43 @@
-# Use Node.js 20 as base image
-FROM node:20
+# --- 1. Lépés: Frontend Buildelése ---
+# Node.js alap, build néven hivatkozunk rá
+FROM node:20-alpine as frontend-builder
 
-# Set working directory
+WORKDIR /app/frontend
+
+# Először csak a package.json-t másoljuk a gyorsabb cache miatt
+COPY frontend/package*.json ./
+RUN npm install
+
+# Most másoljuk a forráskódot
+COPY frontend/ .
+
+# Angular Buildelése Production módba
+# FONTOS: Ez létrehozza a dist mappát
+RUN npm run build
+
+
+# --- 2. Lépés: Backend és Végső Konténer ---
+FROM node:20-alpine
+
 WORKDIR /app
 
-# Backend setup
-COPY backend/package.json /app/
-RUN npm install
-COPY backend/ /app/
+# Backend függőségek telepítése
+COPY backend/package*.json ./
+RUN npm install --production
 
-# Expose backend port
+# Backend kód másolása
+COPY backend/ .
+
+# --- A VARÁZSLAT ITT TÖRTÉNIK ---
+# Átmásoljuk az 1. lépésben (frontend-builder) elkészült Angular fájlokat
+# a Backend "public" mappájába.
+# FONTOS: Ellenőrizd, hogy a te projektedben dist/frontend/browser vagy simán dist/frontend van-e!
+# Angular 17+ esetén általában: dist/<project-name>/browser
+COPY --from=frontend-builder /app/frontend/dist/*/browser ./public
+
+# Környezeti változók alapértékei
+ENV PORT=3000
 EXPOSE 3000
 
-# Start backend server
+# Szerver indítása
 CMD ["node", "server.js"]
