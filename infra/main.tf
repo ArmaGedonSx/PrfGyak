@@ -38,8 +38,12 @@ resource "render_web_service" "mean_app" {
   }
 
   env_vars = {
-    NODE_VERSION = "20"
-    MONGO_URI = "placeholder_value_change_in_dashboard"
+    NODE_VERSION = {
+      value = "20"
+    }
+    MONGO_URI = {
+      value = "placeholder_value_change_in_dashboard"
+    }
   }
 }
 
