@@ -14,8 +14,7 @@ variable "render_api_key" {
 
 variable "owner_id" {
   type = string
-  # Ha üresen hagyod a Jenkinsben, a provider megpróbálja kitalálni.
-  # De ha hibát dob, meg kell adni a Render Team ID-t vagy User ID-t.
+  # Ha hibát dob a pipeline, itt majd meg kell adnod a Render User ID-t.
 }
 
 provider "render" {
@@ -29,20 +28,16 @@ resource "render_web_service" "mean_app" {
   plan = "free"
   region = "frankfurt"
 
-  # JAVÍTÁS 1: Itt kivettem az "=" jelet, mert ez egy blokk
-  runtime_source {
-    # JAVÍTÁS 2: Itt is kivettem az "=" jelet
-    docker {
-      # JAVÍTÁS 3: "repo" helyett "repo_url" kell
-      repo_url = "https://github.com/ArmaGedonSx/PrfGyak.git"
-      branch   = "main"
-      
-      # Javasolt: Ne deployoljon minden pushra, csak ha a Jenkins kéri
-      auto_deploy = false 
+  # JAVÍTÁS: Visszatettem az "=" jeleket, mert a hibaüzenet kérte,
+  # DE kijavítottam a "repo"-t "repo_url"-re.
+  runtime_source = {
+    docker = {
+      repo_url    = "https://github.com/ArmaGedonSx/PrfGyak.git"
+      branch      = "main"
+      auto_deploy = false
     }
   }
 
-  # Az env_vars viszont egy argumentum (map), itt KELL az "=" jel
   env_vars = {
     "NODE_VERSION" = {
       value = "20"
