@@ -4,7 +4,7 @@ terraform {
       source = "render-oss/render"
       version = "1.2.0"
     }
-  }í
+  }
 }
 
 variable "render_api_key" {

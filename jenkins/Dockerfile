@@ -22,6 +22,10 @@ RUN apt-get install -y wget unzip && \
     rm terraform_1.6.6_linux_amd64.zip && \
     chmod +x /usr/local/bin/terraform
 
+# Node.js telepítése (LTS verzió)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
+
 # Git és egyéb eszközök
 RUN apt-get install -y git curl
 
