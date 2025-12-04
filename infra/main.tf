@@ -31,10 +31,10 @@ resource "render_web_service" "mean_app" {
   region = "frankfurt"
   
   runtime_source = {
-    type = "docker"
-    repo = "https://github.com/ArmaGedonSx/PrfGyak.git"
-    branch = "main"
-    auto_deploy = "no"
+    docker = {
+      repo = "https://github.com/ArmaGedonSx/PrfGyak.git"
+      branch = "main"
+    }
   }
 
   env_vars = {
