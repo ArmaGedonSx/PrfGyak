@@ -26,7 +26,7 @@ export interface Stats {
     providedIn: 'root'
 })
 export class AdminService {
-    private apiUrl = environment.apiUrl;
+    private apiUrl = `${environment.apiUrl}/api`;
 
     constructor(
         private http: HttpClient,
