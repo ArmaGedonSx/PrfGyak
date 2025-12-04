@@ -18,7 +18,7 @@ RUN sed -i "s|http://localhost:3000|${API_URL}|g" src/environments/environment.t
 
 # Angular Buildelése Production módba
 # FONTOS: Ez létrehozza a dist mappát
-RUN npm run build --configuration production
+RUN npm run build
 
 
 # --- 2. Lépés: Backend és Végső Konténer ---
