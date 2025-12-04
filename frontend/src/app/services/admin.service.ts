@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RecipeService, Recipe } from './recipe.service';
 import { IngredientService, Ingredient } from './ingredient.service';
+import { environment } from '../../environments/environment';
 
 export interface User {
     id?: string;
@@ -25,7 +26,7 @@ export interface Stats {
     providedIn: 'root'
 })
 export class AdminService {
-    private apiUrl = 'http://localhost:3000/api';
+    private apiUrl = environment.apiUrl;
 
     constructor(
         private http: HttpClient,
