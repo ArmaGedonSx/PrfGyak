@@ -14,9 +14,8 @@ variable "render_api_key" {
 
 variable "owner_id" {
   type = string
-  # Ezt a Render URL-ből vagy profilból tudod kinézni, 
-  # de ha üresen hagyod vagy warningot dob, 
-  # a provider megpróbálja kitalálni.
+  # Ha üresen hagyod a Jenkinsben, a provider megpróbálja kitalálni.
+  # De ha hibát dob, meg kell adni a Render Team ID-t vagy User ID-t.
 }
 
 provider "render" {
@@ -29,19 +28,26 @@ resource "render_web_service" "mean_app" {
   name = "recept-gyujtemeny"
   plan = "free"
   region = "frankfurt"
-  
-  runtime_source = {
-    docker = {
-      repo = "https://github.com/ArmaGedonSx/PrfGyak.git"
-      branch = "main"
+
+  # JAVÍTÁS 1: Itt kivettem az "=" jelet, mert ez egy blokk
+  runtime_source {
+    # JAVÍTÁS 2: Itt is kivettem az "=" jelet
+    docker {
+      # JAVÍTÁS 3: "repo" helyett "repo_url" kell
+      repo_url = "https://github.com/ArmaGedonSx/PrfGyak.git"
+      branch   = "main"
+      
+      # Javasolt: Ne deployoljon minden pushra, csak ha a Jenkins kéri
+      auto_deploy = false 
     }
   }
 
+  # Az env_vars viszont egy argumentum (map), itt KELL az "=" jel
   env_vars = {
-    NODE_VERSION = {
+    "NODE_VERSION" = {
       value = "20"
     }
-    MONGO_URI = {
+    "MONGO_URI" = {
       value = "placeholder_value_change_in_dashboard"
     }
   }
