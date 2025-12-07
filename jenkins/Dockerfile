@@ -10,6 +10,11 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y docker-ce-cli
 
+# Docker Compose telepítése (V2)
+RUN curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+    chmod +x /usr/local/bin/docker-compose && \
+    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
 # Ansible telepítése
 RUN apt-get install -y python3-pip python3-venv && \
     pip3 install --break-system-packages ansible
