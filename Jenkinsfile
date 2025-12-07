@@ -33,8 +33,8 @@ pipeline {
         stage('🚀 Deploy Locally (Docker Compose)') {
             steps {
                 echo '📦 Deploying application locally...'
-                // Leállítás és újraindítás
-                sh 'docker-compose down || true'
+                // Leállítás és újraindítás (orphan konténerek is)
+                sh 'docker-compose down --remove-orphans || true'
                 sh 'docker-compose up -d --build'
                 echo '✅ Application deployed!'
                 echo ''
