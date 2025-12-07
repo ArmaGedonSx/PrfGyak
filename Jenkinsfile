@@ -53,7 +53,7 @@ scrape_configs:
   - job_name: 'mean-app'
     static_configs:
       - targets: ['mean-app:3000']
-    metrics_path: '/api/test'
+    metrics_path: '/metrics'
 EOF
                 '''
                 
