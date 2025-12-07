@@ -22,7 +22,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      # JAVÍTÁS: A projektgyökér helyett a "config" mappát célozzuk
+      # JAVÍTVA: A config mappából olvassuk a fájlt!
       - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
     command:
