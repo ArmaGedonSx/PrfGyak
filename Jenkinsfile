@@ -34,11 +34,13 @@ pipeline {
             steps {
                 echo '📦 Deploying application locally...'
                 
-                // Erős takarítás
-                sh 'rm -rf prometheus.yml || true'
-                sh 'docker-compose down --remove-orphans || true'
+                // 1. TISZTÍTÁS: Erősen töröljük a buildelt és konfigurációs fájlokat a gyökérből
+                sh 'rm -rf prometheus.yml || true' // Törli a konfigurációs fájl(ok)at [cite: 12, 13]
+                
+                // 2. LEÁLLÍTÁS: leállítjuk az összes korábbi konténert [cite: 14]
+                sh 'docker-compose down --remove-orphans || true' 
 
-                // Prometheus config létrehozása
+                // 3. Prometheus config létrehozása
                 sh '''
                 cat > prometheus.yml << 'EOF'
 global:
