@@ -33,11 +33,11 @@ pipeline {
         stage('🚀 Deploy Locally (Docker Compose)') {
             steps {
                 echo '📦 Deploying application locally...'
-                // Konténerek leállítása és törlése (force)
-                sh 'docker stop mean-app prometheus grafana || true'
-                sh 'docker rm mean-app prometheus grafana || true'
-                sh 'docker-compose down --remove-orphans || true'
                 
+                // Erős takarítás
+                sh 'rm -rf prometheus.yml || true'
+                sh 'docker-compose down --remove-orphans || true'
+
                 // Prometheus config létrehozása
                 sh '''
                 cat > prometheus.yml << 'EOF'
@@ -47,8 +47,10 @@ global:
 
 scrape_configs:
   - job_name: 'mean-app'
+    # Itt a konténernevet célozzuk a Docker hálózaton belül
     static_configs:
       - targets: ['mean-app:3000']
+    metrics_path: '/metrics'
 EOF
                 '''
                 
