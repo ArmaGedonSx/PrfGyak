@@ -33,7 +33,9 @@ pipeline {
         stage('🚀 Deploy Locally (Docker Compose)') {
             steps {
                 echo '📦 Deploying application locally...'
-                // Leállítás és újraindítás (orphan konténerek is)
+                // Konténerek leállítása és törlése (force)
+                sh 'docker stop mean-app prometheus grafana || true'
+                sh 'docker rm mean-app prometheus grafana || true'
                 sh 'docker-compose down --remove-orphans || true'
                 sh 'docker-compose up -d --build'
                 echo '✅ Application deployed!'
