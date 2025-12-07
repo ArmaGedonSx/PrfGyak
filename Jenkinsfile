@@ -38,8 +38,23 @@ pipeline {
                 sh 'docker rm mean-app prometheus grafana || true'
                 sh 'docker-compose down --remove-orphans || true'
                 
-                // Prometheus config ellenőrzése
-                sh 'ls -la prometheus.yml || echo "⚠️ prometheus.yml not found"'
+                // Prometheus config létrehozása
+                sh '''
+                cat > prometheus.yml << 'EOF'
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  - job_name: 'mean-app'
+    static_configs:
+      - targets: ['mean-app:3000']
+EOF
+                '''
+                
+                // Config ellenőrzése
+                sh 'ls -la prometheus.yml'
+                sh 'cat prometheus.yml'
                 
                 // Deploy
                 sh 'docker-compose up -d --build'
