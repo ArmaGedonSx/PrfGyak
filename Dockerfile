@@ -25,9 +25,9 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Backend függőségek telepítése
+# Backend függőségek telepítése (bcryptjs nem igényel Python-t)
 COPY backend/package*.json ./
-RUN npm install --production
+RUN npm ci --only=production
 
 # Backend kód másolása
 COPY backend/ .

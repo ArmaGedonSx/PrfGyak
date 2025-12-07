@@ -1,13 +1,56 @@
 version: "3.8"
 
 services:
-  mean-app: # Átneveztem, mert ebben már benne van a Frontend és a Backend is
-    build: .
-    container_name: mean-production-test
+  mean-app:
+    build:
+      context: .
+      no_cache: true
+    container_name: mean-app
     restart: always
     ports:
       - "3000:3000"
     environment:
-      # A jelszót inkább .env fájlból húzzuk be (lásd lentebb)
       - MONGO_URI=${MONGO_URI}
       - NODE_ENV=production
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+  grafana-data:

@@ -3,9 +3,29 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const promClient = require('prom-client');
 
 // Load environment variables
 dotenv.config();
+
+// Prometheus metrics setup
+const register = new promClient.Registry();
+promClient.collectDefaultMetrics({ register });
+
+// Custom metrics
+const httpRequestDuration = new promClient.Histogram({
+    name: 'http_request_duration_seconds',
+    help: 'Duration of HTTP requests in seconds',
+    labelNames: ['method', 'route', 'status_code'],
+    registers: [register]
+});
+
+const httpRequestTotal = new promClient.Counter({
+    name: 'http_requests_total',
+    help: 'Total number of HTTP requests',
+    labelNames: ['method', 'route', 'status_code'],
+    registers: [register]
+});
 
 // Import routes
 const {
@@ -82,12 +102,31 @@ app.get('/api/test', (req, res) => {
 });
 
 // ---------------------------------------------------------
+// PROMETHEUS METRICS ENDPOINT (FONTOS: API routes után, de frontend előtt!)
+// ---------------------------------------------------------
+app.get('/metrics', async (req, res) => {
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());
+});
+
+// ---------------------------------------------------------
 // FRONTEND KISZOLGÁLÁSA (MÓDOSÍTVA A DOCKERHEZ)
 // ---------------------------------------------------------
 
 // Mindig kiszolgáljuk a static fájlokat, ha léteznek (nem csak productionben)
 // A Dockerfile a "./public" mappába másolja az Angular buildet
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Middleware to track HTTP requests (frontend előtt!)
+app.use((req, res, next) => {
+    const start = Date.now();
+    res.on('finish', () => {
+        const duration = (Date.now() - start) / 1000;
+        httpRequestDuration.labels(req.method, req.route?.path || req.path, res.statusCode).observe(duration);
+        httpRequestTotal.labels(req.method, req.route?.path || req.path, res.statusCode).inc();
+    });
+    next();
+});
 
 // Minden egyéb kérésre (ami nem API), visszaadjuk az index.html-t
 // Ez biztosítja, hogy az Angular Routing működjön

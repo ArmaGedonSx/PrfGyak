@@ -1,9 +1,10 @@
 global:
   scrape_interval: 15s
+  evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: "mean_app_uptime"
-    metrics_path: /api/test
+  - job_name: "mean-app"
     static_configs:
-      - targets: ["recept-gyujtemeny.onrender.com:443"]
-    scheme: https
+      - targets: ["mean-app:3000"]
+    metrics_path: "/metrics"
+    scrape_interval: 10s
