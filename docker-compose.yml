@@ -16,14 +16,15 @@ services:
       - monitoring
 
   prometheus:
-    image: prom/prometheus:latest
+    # JAVÍTÁS: Nem mountolunk, hanem buildelünk!
+    build:
+      context: ./prometheus_build
     container_name: prometheus
     restart: always
     ports:
       - "9090:9090"
     volumes:
-      # JAVÍTVA: A config mappából olvassuk a fájlt!
-      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      # A konfigurációs fájlt kivettük innen, mert már benne van az image-ben!
       - prometheus-data:/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
