@@ -34,16 +34,16 @@ pipeline {
             steps {
                 echo '📦 Deploying application locally...'
                 
-                // 1. TISZTÍTÁS: Eltávolítjuk a fájlt/mappát, ami konfliktust okoz
-                // Ez a legfontosabb sor, többször is futtathatjuk, ha szükséges
-                sh 'rm -rf prometheus.yml || true'
-                
-                // 2. LEÁLLÍTÁS: leállítjuk az összes konténert és töröljük a volume-okat (ha vannak)
+                // ÚJ: Létrehozunk egy dedikált mappát a konfigurációknak
+                sh 'mkdir -p config'
+                sh 'rm -rf config/prometheus.yml || true' // Tisztítjuk a mappát
+
+                // 2. LEÁLLÍTÁS: leállítjuk az összes konténert (mielőtt az új fájlt használjuk)
                 sh 'docker-compose down --remove-orphans || true' 
 
-                // 3. Konfiguráció létrehozása (garantáltan fájlként)
+                // 3. Konfiguráció létrehozása: a mappában
                 sh '''
-                cat > prometheus.yml << 'EOF'
+                cat > config/prometheus.yml << 'EOF'
 global:
   scrape_interval: 10s
   evaluation_interval: 10s
