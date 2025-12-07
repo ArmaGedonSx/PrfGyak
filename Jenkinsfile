@@ -37,6 +37,11 @@ pipeline {
                 sh 'docker stop mean-app prometheus grafana || true'
                 sh 'docker rm mean-app prometheus grafana || true'
                 sh 'docker-compose down --remove-orphans || true'
+                
+                // Prometheus config ellenőrzése
+                sh 'ls -la prometheus.yml || echo "⚠️ prometheus.yml not found"'
+                
+                // Deploy
                 sh 'docker-compose up -d --build'
                 echo '✅ Application deployed!'
                 echo ''
