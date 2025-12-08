@@ -9,8 +9,9 @@ services:
     restart: always
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     environment:
-      - MONGO_URI=${MONGO_URI}
       - NODE_ENV=production
     networks:
       - monitoring
